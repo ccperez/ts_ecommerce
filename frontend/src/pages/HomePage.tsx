@@ -1,5 +1,6 @@
 import { useEffect, useReducer } from 'react'
 import { Col, Row } from 'react-bootstrap'
+import { Helmet } from 'react-helmet-async'
 
 import Loading from '../components/Loading'
 import Message from '../components/Message'
@@ -24,6 +25,9 @@ export default function HomePage() {
 		<Message variant="danger">{error}</Message>
 	) : (
 		<Row>
+			<Helmet>
+				<title>TS Amazona</title>
+			</Helmet>
 			{products.map((product) => (
 				<Col key={product.slug} sm={6} md={4} lg={3}>
 					<ProductItem product={product} />
