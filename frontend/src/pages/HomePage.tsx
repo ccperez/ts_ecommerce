@@ -1,9 +1,9 @@
 import { useEffect, useReducer } from 'react'
-import { Row } from 'react-bootstrap'
+import { Col, Row } from 'react-bootstrap'
 
 import Loading from '../components/Loading'
 import Message from '../components/Message'
-import Product from '../components/Product'
+import ProductItem from '../components/ProductItem'
 
 import { State, Action } from '../state/types/Product'
 import { stateProducts } from '../state/initialState'
@@ -25,7 +25,9 @@ export default function HomePage() {
 	) : (
 		<Row>
 			{products.map((product) => (
-				<Product key={product.slug} product={product} />
+				<Col key={product.slug} sm={6} md={4} lg={3}>
+					<ProductItem product={product} />
+				</Col>
 			))}
 		</Row>
 	)
