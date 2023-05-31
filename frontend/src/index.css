@@ -5,13 +5,17 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+}
 
-  .product-image {
-    max-width: 400px;
-    width: 100%;
-  }
+.product-image {
+  max-width: 400px;
+  width: 100%;
+}
 
-  .rating span {
-    color: #ffc000;
-  }
+.rating span {
+  color: #ffc000;
+}
+
+img.large {
+  max-width: 100%;
 }
