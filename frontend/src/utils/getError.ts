@@ -1,4 +1,4 @@
-import { ApiError } from '../state/types/ApiError'
+import { ApiError } from '../types/ApiError'
 
 export const getError = (error: ApiError) =>
   error.response && error.response.data.message
