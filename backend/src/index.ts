@@ -1,25 +1,32 @@
 import cors from 'cors'
-import express, { Request, Response } from 'express'
-import { sampleProducts } from './data'
+import express from 'express'
+import mongoose from 'mongoose'
+import dotenv from 'dotenv'
+import { productRouter } from './routers/productRouter'
+import { seedRouter } from './routers/seedRouter'
+
+dotenv.config()
+
+const { MONGODB_URI, CLIENT_URL, PORT } = process.env
+
+mongoose.set('strictQuery', true)
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => console.log('connected to mongodb'))
+  .catch(() => console.log('error mongodb'))
 
 const app = express()
 
 app.use(
   cors({
     credentials: true,
-    origin: ['http://localhost:3000'],
+    origin: [CLIENT_URL],
   })
 )
 
-app.get('/api/products', (req: Request, res: Response) => {
-  res.json(sampleProducts)
-})
+app.use('/api/products', productRouter)
+app.use('/api/seed', seedRouter)
 
-app.get('/api/products/:slug', (req: Request, res: Response) => {
-  res.json(sampleProducts.find((x) => x.slug === req.params.slug))
-})
-
-const PORT = 5000
 app.listen(PORT, () => {
   console.log(`server started at http://localhost:${PORT}`)
 })
