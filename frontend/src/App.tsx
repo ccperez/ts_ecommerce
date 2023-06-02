@@ -1,10 +1,11 @@
 import { useContext } from 'react'
-import { Button, Container, Nav, Navbar } from 'react-bootstrap'
-import { Outlet } from 'react-router-dom'
+import { Badge, Button, Container, Nav, Navbar } from 'react-bootstrap'
+import { Link, Outlet } from 'react-router-dom'
 import { Store } from './Store'
+import { CartItem } from './types/Cart'
 
 function App() {
-	const { state: { mode }, dispatch } = useContext(Store)
+	const { state: { mode, cart }, dispatch } = useContext(Store)
 
 	const switchModeHandler = () => {
 		document.body.setAttribute('data-bs-theme', mode)
@@ -22,9 +23,14 @@ function App() {
 						<Button variant={mode} onClick={switchModeHandler}>
 							<i className={mode === 'light' ? 'fa fa-sun' : 'fa fa-moon'}></i>
 						</Button>
-						<a href="/cart" className="nav-link">
+						<Link to="/cart" className="nav-link">
 							Cart
-						</a>
+						</Link>
+						{cart.cartItems.length > 0 && (
+							<Badge pill bg="danger">
+								{cart.cartItems.reduce((a: number, c: CartItem) => a + c.quantity, 0)}
+							</Badge>
+						)}
 						<a href="/signin" className="nav-link">
 							Sign In
 						</a>

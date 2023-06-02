@@ -6,7 +6,7 @@ import Message from '../components/Message'
 import ProductItem from '../components/ProductItem'
 
 import { useGetProductsQuery } from '../hooks/productHooks'
-import { getError } from '../utils/getError'
+import { getError } from '../utils'
 import { ApiError } from '../types/ApiError'
 import { Product } from '../types/Product'
 
