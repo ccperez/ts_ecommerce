@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify'
 import { CartItem } from '../types/Cart'
 
 export default {
@@ -6,7 +7,7 @@ export default {
       cartItems.find((item) => item._id === id),
     checkStock: (countInStock: number, quantity: number) => {
       if (countInStock < quantity) {
-        alert('Quantity added is more than the current stock')
+        toast.warn('Quantity added is more than the current stock')
         return true
       }
       return false

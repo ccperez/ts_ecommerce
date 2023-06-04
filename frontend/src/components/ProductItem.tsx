@@ -10,12 +10,10 @@ interface ProductProps { product: Product }
 
 export default function ProductItem({ product }: ProductProps) {
 	const { state, dispatch } = useContext(Store)
-	const {
-		cart: { cartItems },
-	} = state
+	const { cart } = state
 
 	const addToCartHandler = () =>
-		addToCart(dispatch, cartItems, product)
+		addToCart(dispatch, cart.cartItems, product)
 
 	return (
 		<Card>

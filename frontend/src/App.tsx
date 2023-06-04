@@ -1,6 +1,9 @@
 import { useContext } from 'react'
 import { Badge, Button, Container, Nav, Navbar } from 'react-bootstrap'
 import { Link, Outlet } from 'react-router-dom'
+import { LinkContainer } from 'react-router-bootstrap'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import { Store } from './Store'
 import fn from './functions/cart'
 
@@ -14,10 +17,13 @@ function App() {
 
 	return (
 		<div className="d-flex flex-column vh-100">
+			<ToastContainer position="bottom-center" limit={1} />
 			<header>
 				<Navbar expand="lg">
 					<Container>
-						<Navbar.Brand>tsamazona</Navbar.Brand>
+						<LinkContainer to="/">
+							<Navbar.Brand>tsamazona</Navbar.Brand>
+						</LinkContainer>
 					</Container>
 					<Nav>
 						<Button variant={mode} onClick={switchModeHandler}>
