@@ -1,15 +1,12 @@
 import { useContext } from 'react'
 import { Button, Card } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import { Store } from '../Store'
-import { CartItem } from '../types/Cart'
-import { Product } from '../types/Product'
-import { convertProductToCartItem } from '../utils'
 import Rating from './Rating'
+import { Store } from '../Store'
+import { Product } from '../types/Product'
+import { addToCart } from '../stateMgmt/actions/cartActions'
 
-interface ProductProps {
-	product: Product
-}
+interface ProductProps { product: Product }
 
 export default function ProductItem({ product }: ProductProps) {
 	const { state, dispatch } = useContext(Store)
@@ -17,18 +14,8 @@ export default function ProductItem({ product }: ProductProps) {
 		cart: { cartItems },
 	} = state
 
-	const addToCartHandler = (item: CartItem) => {
-		const existItem = cartItems.find((x) => x._id === product._id)
-		const quantity = existItem ? existItem.quantity + 1 : 1
-		if (product.countInStock < quantity) {
-			alert('Quantity added is more than the current stock')
-			return
-		}
-		dispatch({
-			type: 'CART_ADD_ITEM',
-			payload: { ...item, quantity },
-		})
-	}
+	const addToCartHandler = () =>
+		addToCart(dispatch, cartItems, product)
 
 	return (
 		<Card>
@@ -46,9 +33,7 @@ export default function ProductItem({ product }: ProductProps) {
 						Out of stock
 					</Button>
 				) : (
-					<Button
-						onClick={() => addToCartHandler(convertProductToCartItem(product))}
-					>
+					<Button onClick={() => addToCartHandler()} >
 						Add to cart
 					</Button>
 				)}

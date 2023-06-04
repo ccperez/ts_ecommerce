@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { Badge, Button, Container, Nav, Navbar } from 'react-bootstrap'
 import { Link, Outlet } from 'react-router-dom'
 import { Store } from './Store'
-import { CartItem } from './types/Cart'
+import fn from './functions/cart'
 
 function App() {
 	const { state: { mode, cart }, dispatch } = useContext(Store)
@@ -28,7 +28,7 @@ function App() {
 						</Link>
 						{cart.cartItems.length > 0 && (
 							<Badge pill bg="danger">
-								{cart.cartItems.reduce((a: number, c: CartItem) => a + c.quantity, 0)}
+								{fn.cart.totalItems(cart.cartItems)}
 							</Badge>
 						)}
 						<a href="/signin" className="nav-link">
