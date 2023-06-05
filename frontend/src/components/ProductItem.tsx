@@ -9,11 +9,9 @@ import { addToCart } from '../stateMgmt/actions/cartActions'
 interface ProductProps { product: Product }
 
 export default function ProductItem({ product }: ProductProps) {
-	const { state, dispatch } = useContext(Store)
-	const { cart } = state
+	const { state: { cart: { cartItems }, }, dispatch, } = useContext(Store)
 
-	const addToCartHandler = () =>
-		addToCart(dispatch, cart.cartItems, product)
+	const addToCartHandler = () => addToCart(dispatch, cartItems, product)
 
 	return (
 		<Card>

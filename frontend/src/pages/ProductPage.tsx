@@ -18,13 +18,12 @@ export default function ProductPage() {
 	const navigate = useNavigate()
 	const { slug } = useParams()
 
-	const { state, dispatch } = useContext(Store)
-	const { cart } = state
+	const { state: { cart: { cartItems }, }, dispatch, } = useContext(Store)
 
 	const { data: product, isLoading, error } = useGetProductDetailsBySlugQuery(slug!)
 
 	const addToCartHandler = () => {
-		addToCart(dispatch, cart.cartItems, product!)
+		addToCart(dispatch, cartItems, product!)
 		navigate('/')
 	}
 

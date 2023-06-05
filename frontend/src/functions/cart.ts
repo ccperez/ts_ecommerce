@@ -14,5 +14,7 @@ export default {
     },
     totalItems: (items: Array<CartItem>) =>
       items.reduce((a: number, c: CartItem) => a + c.quantity, 0),
+    totalAmount: (items: Array<CartItem>) =>
+      items.reduce((a: number, c: CartItem) => a + c.price * c.quantity, 0),
   },
 }

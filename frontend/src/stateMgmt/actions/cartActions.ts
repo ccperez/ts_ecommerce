@@ -18,3 +18,8 @@ export const addToCart = (
   dispatch({ type: 'CART_ADD_ITEM', payload: { ...newItem, quantity } })
   toast.success('Product added to the cart')
 }
+
+export const updateCart = (dispatch: any, item: CartItem, quantity: number) => {
+  if (fn.cart.checkStock(item.countInStock, quantity)) return
+  dispatch({ type: 'CART_ADD_ITEM', payload: { ...item, quantity } })
+}
