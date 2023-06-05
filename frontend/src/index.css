@@ -23,3 +23,8 @@ img.large {
 img.thumbnail {
   height: 80px;
 }
+
+.cart-qty {
+  margin-left: 3px;
+  margin-right: 3px;
+}

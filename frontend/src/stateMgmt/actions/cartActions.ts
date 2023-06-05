@@ -1,12 +1,13 @@
 import { toast } from 'react-toastify'
 import { Product } from '../../types/Product'
 import { CartItem } from '../../types/Cart'
+import { Action } from '../../types/App'
 
 import { convertProductToCartItem } from '../../utils'
 import fn from '../../functions/cart'
 
 export const addToCart = (
-  dispatch: any,
+  dispatch: React.Dispatch<Action>,
   cartItems: CartItem[],
   product: Product
 ) => {
@@ -19,7 +20,14 @@ export const addToCart = (
   toast.success('Product added to the cart')
 }
 
-export const updateCart = (dispatch: any, item: CartItem, quantity: number) => {
+export const updateCart = (
+  dispatch: React.Dispatch<Action>,
+  item: CartItem,
+  quantity: number
+) => {
   if (fn.cart.checkStock(item.countInStock, quantity)) return
   dispatch({ type: 'CART_ADD_ITEM', payload: { ...item, quantity } })
 }
+
+export const removeItem = (dispatch: React.Dispatch<Action>, item: CartItem) =>
+  dispatch({ type: 'CART_REMOVE_ITEM', payload: item })
