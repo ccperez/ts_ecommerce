@@ -14,11 +14,14 @@ const itemValue = (item: string) =>
     ? {}
     : item === 'paymentMethod'
     ? 'PayPal'
+		: item === 'userInfo'
+		? null
     : windowMatchMedia
     ? 'dark'
     : 'light'
 
 const initialState: AppState = {
+	userInfo: itemValue('userInfo'),
   mode: itemValue('mode'),
   cart: {
     cartItems: itemValue('cartItems'),

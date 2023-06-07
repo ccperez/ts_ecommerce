@@ -9,31 +9,31 @@ import { addToCart } from '../stateMgmt/actions/cartActions'
 interface ProductProps { product: Product }
 
 export default function ProductItem({ product }: ProductProps) {
-	const { state: { cart: { cartItems }, }, dispatch, } = useContext(Store)
+  const { state: { cart: { cartItems }, }, dispatch, } = useContext(Store)
 
-	const addToCartHandler = () => addToCart(dispatch, cartItems, product)
+  const addToCartHandler = () => addToCart(dispatch, cartItems, product)
 
-	return (
-		<Card>
-			<Link to={`/product/${product.slug}`}>
-				<img src={product.image} className="card-img-top" alt={product.name} />
-			</Link>
-			<Card.Body>
-				<Link to={`/product/${product.slug}`}>
-					<Card.Title>{product.name}</Card.Title>
-				</Link>
-				<Rating rating={product.rating} numReviews={product.numReviews} />
-				<Card.Text>${product.price}</Card.Text>
-				{product.countInStock === 0 ? (
-					<Button variant="light" disabled>
-						Out of stock
-					</Button>
-				) : (
-					<Button onClick={() => addToCartHandler()} >
-						Add to cart
-					</Button>
-				)}
-			</Card.Body>
-		</Card>
-	)
+  return (
+    <Card>
+      <Link to={`/product/${product.slug}`}>
+        <img src={product.image} className="card-img-top" alt={product.name} />
+      </Link>
+      <Card.Body>
+        <Link to={`/product/${product.slug}`}>
+          <Card.Title>{product.name}</Card.Title>
+        </Link>
+        <Rating rating={product.rating} numReviews={product.numReviews} />
+        <Card.Text>${product.price}</Card.Text>
+        {product.countInStock === 0 ? (
+          <Button variant="light" disabled>
+            Out of stock
+          </Button>
+        ) : (
+          <Button onClick={() => addToCartHandler()} >
+            Add to cart
+          </Button>
+        )}
+      </Card.Body>
+    </Card>
+  )
 }
