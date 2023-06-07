@@ -17,10 +17,7 @@ function App() {
 		dispatch({ type: 'SWITCH_MODE' })
 	}
 
-	const signoutHandler = () => {
-		dispatch({ type: 'USER_SIGNOUT' })
-		logout()
-	}
+	const signoutHandler = () => logout(dispatch)
 
 	return (
 		<div className="d-flex flex-column vh-100">

@@ -2,14 +2,32 @@ import { useMutation } from '@tanstack/react-query'
 import apiClient from '../apiClient'
 import { UserInfo } from '../types/UserInfo'
 
-interface userProps {
+interface signInProps {
   email: string
   password: string
 }
 
-export const useSigninMutation = () =>
+interface signUpProps {
+  name: string
+  email: string
+  password: string
+}
+
+export const useSignInMutation = () =>
   useMutation({
-    mutationFn: async ({ email, password }: userProps) =>
+    mutationFn: async ({ email, password }: signInProps) =>
       (await apiClient.post<UserInfo>(`api/users/signin`, { email, password }))
         .data,
+  })
+
+export const useSignUpMutation = () =>
+  useMutation({
+    mutationFn: async ({ name, email, password }: signUpProps) =>
+      (
+        await apiClient.post<UserInfo>(`api/users/signup`, {
+          name,
+          email,
+          password,
+        })
+      ).data,
   })
