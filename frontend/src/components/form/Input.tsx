@@ -5,10 +5,12 @@ interface InputProps {
   type: string,
   name: string,
   label: string,
+  value: any,
+  autoFocus: boolean,
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export default function Input({ type, name, label, onChange }: InputProps) {
+export default function Input({ type, name, label, value, autoFocus, onChange }: InputProps) {
   const [passwordType, setPasswordType] = useState('password')
 
   const togglePassword = () =>
@@ -20,7 +22,9 @@ export default function Input({ type, name, label, onChange }: InputProps) {
         return (
           <Form.Control
             required
+            autoFocus={autoFocus}
             type={type}
+            value={value}
             onChange={onChange}
           />
         )
@@ -34,7 +38,9 @@ export default function Input({ type, name, label, onChange }: InputProps) {
         <InputGroup>
           <Form.Control
             required
+            autoFocus={autoFocus}
             type={passwordType}
+            value={value}
             onChange={onChange}
           />
           <Button onClick={togglePassword}>

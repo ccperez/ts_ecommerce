@@ -62,12 +62,15 @@ export default function SignUpPage() {
     }
   }
 
-  const userInputs = inputs.signUp.map((input: InputAttr) => (
+  const fieldValue = [name, email, password]
+  const userInputs = inputs.signUp.map((input: InputAttr, idx: number) => (
     <FormInput
       key={input.name}
       type={input.type}
       name={input.name}
       label={input.label}
+      value={fieldValue[idx]}
+      autoFocus={input.autofocus}
       onChange={(e) => changeHandler(e, input.name)}
     />
   ))

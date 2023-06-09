@@ -51,12 +51,15 @@ export default function SignInPage() {
     }
   }
 
-  const userInputs = inputs.signIn.map((input: InputAttr) => (
+  const fieldValue = [email, password]
+  const userInputs = inputs.signIn.map((input: InputAttr, idx: number) => (
     <FormInput
       key={input.name}
       type={input.type}
       name={input.name}
       label={input.label}
+      value={fieldValue[idx]}
+      autoFocus={input.autofocus}
       onChange={(e) => changeHandler(e, input.name)}
     />
   ))
