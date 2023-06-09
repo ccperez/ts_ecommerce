@@ -17,6 +17,7 @@ import ProductPage from './pages/ProductPage'
 import CartPage from './pages/CartPage'
 import SignInPage from './pages/SignInPage'
 import SignUpPage from './pages/SignUpPage'
+import ResetPasswordPage from './pages/ResetPasswordPage.tsx'
 import { StoreProvider } from './Store'
 
 const router = createBrowserRouter(
@@ -25,10 +26,10 @@ const router = createBrowserRouter(
 			<Route index={true} element={<HomePage />} />
 			<Route path="product/:slug" element={<ProductPage />} />
 			<Route path="cart" element={<CartPage />} />
+
 			<Route path="signin" element={<SignInPage />} />
-			<Route path="signup" element={<SignUpPage/>} />
-			{/* <Route path="dashboard" element={<Dashboard />} /> */}
-			{/* ... etc. */}
+			<Route path="signup" element={<SignUpPage />} />
+			<Route path="reset_password" element={<ResetPasswordPage />} />
 		</Route>
 	)
 )

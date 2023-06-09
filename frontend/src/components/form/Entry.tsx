@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from 'react-router-dom'
-import { Container, Form } from "react-bootstrap";
+import { Col, Container, Form, Row } from "react-bootstrap";
 import fn from '../../functions/common'
 
 interface EntryProps {
@@ -22,16 +22,23 @@ export default function Entry({ title, notify, inputs, formButton, submitHandler
 			<Helmet>
 				<title>{title}</title>
 			</Helmet>
-			<h1 className="my-3 text-center">{title}</h1>
+			<h1 className="my-3 text-center text-capitalize">{title}</h1>
 			<Form onSubmit={submitHandler}>
 				{inputs}
 				<div className="mb-3">
 					{formButton}
 				</div>
-				<div className="mb-3 text-center">
-					{notify}?{' '}
-					<Link to={redirectUrl}>Sign{title.includes('In') ? ' Up' : ' In'}</Link>
-				</div>
+				<Row className='mb-3'>
+					<Col className={title.includes('Up') ? 'text-center' : ''}>
+						{notify}?{' '}
+						<Link to={redirectUrl}>Sign {title.includes('In') ? 'Up' : 'In'}</Link>
+					</Col>
+					{title.includes('In') && (
+						<Col className='d-flex flex-column align-items-end'>
+							<Link to='/reset_password'>Forgot your password?</Link>
+						</Col>
+					)}
+				</Row>
 			</Form>
 		</Container>
 	)
