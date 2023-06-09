@@ -1,21 +1,23 @@
 import { useState, useContext, useEffect } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { Button, Container, Form } from "react-bootstrap";
-import { Helmet } from "react-helmet-async";
+import { Button } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import Loading from '../components/Loading'
+
+import FormEntry from '../components/form/Entry'
+import FormInput from '../components/form/Input'
+
 import { Store } from '../Store'
-import { ApiError } from '../types/ApiError'
 import { getError } from '../utils'
+import { ApiError } from '../types/ApiError'
+import inputs, { InputAttr } from '../user_input_attributes'
+import fn from '../functions/common'
 
 import { useSignInMutation } from '../hooks/userHooks'
 import { login } from '../stateMgmt/actions/userActions'
 
 export default function SignInPage() {
   const navigate = useNavigate()
-  const { search } = useLocation()
-  const redirectInUrl = new URLSearchParams(search).get('redirect')
-  const redirect = redirectInUrl ? redirectInUrl : '/'
+  const redirect = fn.redirect()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -24,8 +26,13 @@ export default function SignInPage() {
 
   const { mutateAsync: signin, isLoading } = useSignInMutation()
 
+  useEffect(() => {
+    if (userInfo) navigate(redirect)
+  }, [navigate, userInfo, redirect])
+
   const submitHandler = async (e: React.SyntheticEvent) => {
     e.preventDefault()
+
     try {
       const data = await signin({ email, password })
       login(dispatch, data)
@@ -35,45 +42,37 @@ export default function SignInPage() {
     }
   }
 
-  useEffect(() => {
-    if (userInfo) navigate(redirect)
-  }, [navigate, userInfo, redirect])
+  const changeHandler = (e: React.ChangeEvent<HTMLInputElement>, name: string) => {
+    switch (name) {
+      case 'email':
+        return setEmail(e.target.value)
+      case 'password':
+        return setPassword(e.target.value)
+    }
+  }
+
+  const userInputs = inputs.signIn.map((input: InputAttr) => (
+    <FormInput
+      key={input.name}
+      type={input.type}
+      name={input.name}
+      label={input.label}
+      onChange={(e) => changeHandler(e, input.name)}
+    />
+  ))
+
+  const formButton =
+    <Button className='w-100' type="submit" disabled={!(email && password) && !isLoading}>
+      {isLoading ? 'Loading...' : 'Sign In'}
+    </Button>
 
   return (
-    <Container className="small-container">
-      <Helmet>
-        <title>Sign In</title>
-      </Helmet>
-      <h1 className="my-3 text-center">Sign In</h1>
-      <Form onSubmit={submitHandler}>
-        <Form.Group className="mb-3" controlId="email">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            required
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="password">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            required
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Form.Group>
-        <div className="mb-3">
-          {!isLoading ? (
-            <Button className='w-100' type="submit">Sign In</Button>
-          ) : (
-            <Loading />
-          )}
-        </div>
-        <div className="mb-3 text-center">
-          New customer?{' '}
-          <Link to={`/signup?redirect=${redirect}`}>Create your account</Link>
-        </div>
-      </Form>
-    </Container>
+    <FormEntry
+      title="Sign In"
+      notify="New customer"
+      inputs={userInputs}
+      formButton={formButton}
+      submitHandler={submitHandler}
+    />
   )
 }

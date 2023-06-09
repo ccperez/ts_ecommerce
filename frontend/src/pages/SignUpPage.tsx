@@ -1,20 +1,23 @@
 import { useState, useContext, useEffect } from 'react'
-import { Button, Container, Form } from 'react-bootstrap'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Button } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { Helmet } from 'react-helmet-async'
-import Loading from '../components/Loading'
+
+import FormEntry from '../components/form/Entry'
+import FormInput from '../components/form/Input'
+
 import { Store } from '../Store'
-import { ApiError } from '../types/ApiError'
 import { getError } from '../utils'
+import { ApiError } from '../types/ApiError'
+import inputs, { InputAttr } from '../user_input_attributes'
+import fn from '../functions/common'
+
 import { useSignUpMutation } from '../hooks/userHooks'
 import { login } from '../stateMgmt/actions/userActions'
 
 export default function SignUpPage() {
   const navigate = useNavigate()
-  const { search } = useLocation()
-  const redirectInUrl = new URLSearchParams(search).get('redirect')
-  const redirect = redirectInUrl ? redirectInUrl : '/'
+  const redirect = fn.redirect()
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -31,10 +34,12 @@ export default function SignUpPage() {
 
   const submitHandler = async (e: React.SyntheticEvent) => {
     e.preventDefault()
+
     if (password !== confirmPassword) {
       toast.error('password do not match')
       return
     }
+
     try {
       const data = await signup({ name, email, password })
       login(dispatch, data)
@@ -44,56 +49,41 @@ export default function SignUpPage() {
     }
   }
 
+  const changeHandler = (e: React.ChangeEvent<HTMLInputElement>, name: string) => {
+    switch (name) {
+      case 'name':
+        return setName(e.target.value)
+      case 'email':
+        return setEmail(e.target.value)
+      case 'password':
+        return setPassword(e.target.value)
+      case 'confirmPassword':
+        return setConfirmPassword(e.target.value)
+    }
+  }
+
+  const userInputs = inputs.signUp.map((input: InputAttr) => (
+    <FormInput
+      key={input.name}
+      type={input.type}
+      name={input.name}
+      label={input.label}
+      onChange={(e) => changeHandler(e, input.name)}
+    />
+  ))
+
+  const formButton =
+    <Button className='w-100' type="submit" disabled={!(name && email && password) && !isLoading}>
+      {isLoading ? 'Loading...' : 'Sign Up'}
+    </Button>
+
   return (
-    <Container className="small-container">
-      <Helmet>
-        <title>Sign Up</title>
-      </Helmet>
-      <h1 className="my-3 text-center">Sign Up</h1>
-      <Form onSubmit={submitHandler}>
-        <Form.Group className="mb-3" controlId="name">
-          <Form.Label>Name</Form.Label>
-          <Form.Control onChange={(e) => setName(e.target.value)} required />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="email">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            required
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="password">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            required
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="confirmPassword">
-          <Form.Label>Confirm Password</Form.Label>
-          <Form.Control
-            type="password"
-            required
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </Form.Group>
-        <div className="mb-3">
-          {!isLoading ? (
-            <Button className='w-100' type="submit">Sign Up</Button>
-          ) : (
-            <Loading />
-          )}
-        </div>
-        <div className="mb-3 text-center">
-          Already have an account?{' '}
-          <Link to={`/signin?redirect=${redirect}`}>Sign In</Link>
-        </div>
-      </Form>
-    </Container>
+    <FormEntry
+      title="Sign Up"
+      notify="Already have an account"
+      inputs={userInputs}
+      formButton={formButton}
+      submitHandler={submitHandler}
+    />
   )
 }
