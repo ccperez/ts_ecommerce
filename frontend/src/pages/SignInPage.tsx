@@ -54,6 +54,7 @@ export default function SignInPage() {
   const fieldValue = [email, password]
   const userInputs = inputs.signIn.map((input: InputAttr, idx: number) => (
     <FormInput
+      form='signIn'
       key={input.name}
       type={input.type}
       name={input.name}

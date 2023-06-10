@@ -66,6 +66,7 @@ export default function SignUpPage() {
   const userInputs = inputs.signUp.map((input: InputAttr, idx: number) => (
     <FormInput
       key={input.name}
+      form='signUp'
       type={input.type}
       name={input.name}
       label={input.label}
