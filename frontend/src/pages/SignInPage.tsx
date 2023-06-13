@@ -19,6 +19,8 @@ export default function SignInPage() {
   const navigate = useNavigate()
   const redirect = fn.redirect()
 
+  const [isValid, setIsValid] = useState(false)
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -43,6 +45,7 @@ export default function SignInPage() {
   }
 
   const changeHandler = (e: React.ChangeEvent<HTMLInputElement>, name: string) => {
+    setIsValid(false)
     switch (name) {
       case 'email':
         return setEmail(e.target.value)
@@ -50,6 +53,8 @@ export default function SignInPage() {
         return setPassword(e.target.value)
     }
   }
+
+  const blurHandler = () => setIsValid(fn.hasError('signIn'))
 
   const fieldValue = [email, password]
   const userInputs = inputs.signIn.map((input: InputAttr, idx: number) => (
@@ -62,11 +67,12 @@ export default function SignInPage() {
       value={fieldValue[idx]}
       autoFocus={input.autofocus}
       onChange={(e) => changeHandler(e, input.name)}
+      onBlur={blurHandler}
     />
   ))
 
   const formButton =
-    <Button className='w-100' type="submit" disabled={!(email && password) && !isLoading}>
+    <Button className='w-100' type="submit" disabled={!(isValid) && !isLoading}>
       {isLoading ? 'Loading...' : 'Sign In'}
     </Button>
 

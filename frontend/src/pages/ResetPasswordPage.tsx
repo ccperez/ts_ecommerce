@@ -24,6 +24,7 @@ export default function ResetPasswordPage() {
             value={email}
             autoFocus={true}
             onChange={(e) => setEmail(e.target.value)}
+            onBlur={console.log('onBlur')}
           />
         )
     }

@@ -19,6 +19,8 @@ export default function SignUpPage() {
   const navigate = useNavigate()
   const redirect = fn.redirect()
 
+  const [isValid, setIsValid] = useState(false)
+
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -35,11 +37,6 @@ export default function SignUpPage() {
   const submitHandler = async (e: React.SyntheticEvent) => {
     e.preventDefault()
 
-    if (password !== confirmPassword) {
-      toast.error('password do not match')
-      return
-    }
-
     try {
       const data = await signup({ name, email, password })
       login(dispatch, data)
@@ -50,6 +47,7 @@ export default function SignUpPage() {
   }
 
   const changeHandler = (e: React.ChangeEvent<HTMLInputElement>, name: string) => {
+    setIsValid(false)
     switch (name) {
       case 'name':
         return setName(e.target.value)
@@ -62,22 +60,25 @@ export default function SignUpPage() {
     }
   }
 
-  const fieldValue = [name, email, password]
+  const blurHandler = () => setIsValid(fn.hasError('signUp'))
+
+  const fieldValue = [name, email, password, confirmPassword]
   const userInputs = inputs.signUp.map((input: InputAttr, idx: number) => (
     <FormInput
-      key={input.name}
       form='signUp'
+      key={input.name}
       type={input.type}
       name={input.name}
       label={input.label}
       value={fieldValue[idx]}
       autoFocus={input.autofocus}
-      onChange={(e) => changeHandler(e, input.name)}
+      onChange={e => changeHandler(e, input.name)}
+      onBlur={blurHandler}
     />
   ))
 
   const formButton =
-    <Button className='w-100' type="submit" disabled={!(name && email && password) && !isLoading}>
+    <Button className='w-100' type="submit" disabled={!isValid && !isLoading}>
       {isLoading ? 'Loading...' : 'Sign Up'}
     </Button>
 
