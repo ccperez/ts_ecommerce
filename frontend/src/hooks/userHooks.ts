@@ -31,3 +31,14 @@ export const useSignUpMutation = () =>
         })
       ).data,
   })
+
+export const userPasswordMutation = () =>
+  useMutation({
+    mutationFn: async (sendData: { data: string }) =>
+      (
+        await apiClient.post<{ data: string }>(
+          `/api/users/password/reset`,
+          sendData
+        )
+      ).data,
+  })

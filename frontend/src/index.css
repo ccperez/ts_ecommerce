@@ -46,3 +46,7 @@ img.thumbnail {
     transition: width 0.2s;
   }
 }
+
+input#otp {
+  text-align: center;
+}

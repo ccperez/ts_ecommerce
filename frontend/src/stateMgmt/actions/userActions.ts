@@ -1,5 +1,6 @@
 import { UserInfo } from '../../types/UserInfo'
 import { Action } from '../../types/App'
+import fn from '../../functions/common'
 
 export const login = (dispatch: React.Dispatch<Action>, data: UserInfo) => {
   dispatch({ type: 'USER_SIGNIN', payload: data })
@@ -14,8 +15,7 @@ export const logout = (dispatch: React.Dispatch<Action>) => {
   localStorage.removeItem('shippingAddress')
   localStorage.removeItem('paymentMethod')
 
-  localStorage.removeItem('signIn')
-  localStorage.removeItem('signUp')
+  fn.clearFormErrors()
 
   window.location.href = '/signin'
 }

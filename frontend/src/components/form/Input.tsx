@@ -51,6 +51,11 @@ export default function Input({ form, type, name, label, value, autoFocus, onCha
         errorMessage = name === 'name' && !ptrn_Fullname.test(value)
           ? 'Please enter your fullname [first and last name]!' : undefined
         break
+      case 'number':
+        const ptrn_OTP = /^\d{6}$/
+        errorMessage = name === 'otp' && !ptrn_OTP.test(value)
+          ? 'Please provide right OTP pattern!' : undefined
+        break
       case 'email':
         const ptrn_Email = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
         errorMessage = !ptrn_Email.test(value)
@@ -68,7 +73,13 @@ export default function Input({ form, type, name, label, value, autoFocus, onCha
         }
     }
 
-    errors = JSON.parse(JSON.stringify({ ...errors, [name]: errorMessage })) // JSON.parse, remove undefined value
+    if (Object.keys(errors).length > 1 && form !== Object.values(errors)[0]) {
+      localStorage.removeItem(Object.values(errors)[0] as string)
+      errors = { form: form }
+    }
+
+    // JSON.parse, remove undefined value
+    errors = JSON.parse(JSON.stringify({ ...errors, [name]: errorMessage }))
     localStorage.setItem(form, JSON.stringify({ errors: errors }))
 
     return name === 'password' || name === 'newPassword'

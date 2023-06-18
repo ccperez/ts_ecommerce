@@ -46,6 +46,20 @@ const userInputAttributes = {
       autofocus: false,
     },
   ],
+  resetPassword: [
+    {
+      type: 'password',
+      name: 'newPassword',
+      label: 'New Password:',
+      autofocus: true,
+    },
+    {
+      type: 'password',
+      name: 'confirmPassword',
+      label: 'Confirm Password:',
+      autofocus: false,
+    },
+  ],
 }
 
 export default userInputAttributes
