@@ -156,7 +156,7 @@ export default function Input({ form, type, name, label, value, autoFocus, onCha
 
   return (
     <Form.Group className="mb-3" controlId={name}>
-      <Form.Label className="text-capitalize">{label}</Form.Label>
+      <Form.Label>{label}</Form.Label>
       {name === 'password' || name === 'newPassword' ? formInput('password') : formInput(type)}
       {formValidation(type, name, value)}
     </Form.Group>

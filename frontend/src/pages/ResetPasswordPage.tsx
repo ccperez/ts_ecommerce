@@ -127,7 +127,7 @@ export default function ResetPasswordPage() {
             form='resetPassword'
             type='number'
             name='otp'
-            label='Enter the OTP'
+            label={`Enter OTP that received from email (${fn.emailProtect(email)})`}
             value={otp}
             autoFocus={true}
             onChange={(e) => changeHandler(e, 'otp')}
@@ -180,7 +180,7 @@ export default function ResetPasswordPage() {
       </a>
 
       {disable && hasResentOTP && <p style={{ color: 'green', textAlign: 'center' }}>
-        <br />New OTP successfully sent to your email
+        <br />New OTP successfully sent to your email ({fn.emailProtect(email)})
       </p>}
       {(genOTP === 0) && <p style={{ color: 'red', textAlign: 'center' }}>
         <br />OTP expired! click resend OTP, to get a new one
