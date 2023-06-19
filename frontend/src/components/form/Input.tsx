@@ -47,9 +47,31 @@ export default function Input({ form, type, name, label, value, autoFocus, onCha
     let errorMessage
     switch (type) {
       case 'text':
-        const ptrn_Fullname = /^[a-zA-Z]{2,40}( [a-zA-Z]{2,40})+$/
-        errorMessage = name === 'name' && !ptrn_Fullname.test(value)
-          ? 'Please enter your fullname [first and last name]!' : undefined
+        if (name === 'name' || name === 'fullName') {
+          const ptrn_Fullname = /^[a-zA-Z]{2,40}( [a-zA-Z]{2,40})+$/
+          errorMessage = !ptrn_Fullname.test(value)
+            ? 'Please enter your fullname [first and last name]!' : undefined
+        }
+        if (name === 'address') {
+          const ptrn_Address = /^(\d+) ?([A-Za-z](?= ))? (.*?) ([^ ]+?) ?((?<= )APT)? ?((?<= )\d*)?$/
+          errorMessage = !ptrn_Address.test(value)
+            ? 'Please enter valid address!' : undefined
+        }
+        if (name === 'city') {
+          const ptrn_City = /^[a-zA-Z ]{1,19}$/
+          errorMessage = !ptrn_City.test(value)
+            ? 'Please enter valid city!' : undefined
+        }
+        if (name === 'postalCode') {
+          const ptrn_PostalCode = /^\d{4}$/
+          errorMessage = !ptrn_PostalCode.test(value)
+            ? 'Please enter valid postalcode!' : undefined
+        }
+        if (name === 'country') {
+          const ptrn_Country = /^[a-zA-Z ]{1,19}$/
+          errorMessage = !ptrn_Country.test(value)
+            ? 'Please enter valid country!' : undefined
+        }
         break
       case 'number':
         const ptrn_OTP = /^\d{6}$/
@@ -71,6 +93,11 @@ export default function Input({ form, type, name, label, value, autoFocus, onCha
             errorMessage = passwordValue !== value
               ? 'Please enter value that match to the password!' : undefined
         }
+    }
+
+    if (!errors.hasOwnProperty('form')) {
+      localStorage.removeItem(form)
+      errors = { form: form }
     }
 
     if (Object.keys(errors).length > 1 && form !== Object.values(errors)[0]) {
@@ -129,7 +156,7 @@ export default function Input({ form, type, name, label, value, autoFocus, onCha
 
   return (
     <Form.Group className="mb-3" controlId={name}>
-      <Form.Label>{label}</Form.Label>
+      <Form.Label className="text-capitalize">{label}</Form.Label>
       {name === 'password' || name === 'newPassword' ? formInput('password') : formInput(type)}
       {formValidation(type, name, value)}
     </Form.Group>

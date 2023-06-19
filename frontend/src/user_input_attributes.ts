@@ -60,6 +60,38 @@ const userInputAttributes = {
       autofocus: false,
     },
   ],
+  shipping: [
+    {
+      type: 'text',
+      name: 'fullName',
+      label: 'Fullname',
+      autofocus: true,
+    },
+    {
+      type: 'text',
+      name: 'address',
+      label: 'Address',
+      autofocus: false,
+    },
+    {
+      type: 'text',
+      name: 'city',
+      label: 'City',
+      autofocus: false,
+    },
+    {
+      type: 'text',
+      name: 'postalCode',
+      label: 'Postal Code',
+      autofocus: false,
+    },
+    {
+      type: 'text',
+      name: 'country',
+      label: 'Country',
+      autofocus: false,
+    },
+  ],
 }
 
 export default userInputAttributes

@@ -34,6 +34,14 @@ export default (state: AppState, action: Action): AppState => {
           totalPrice: 0,
         },
       }
+    case 'SAVE_SHIPPING_ADDRESS':
+      return {
+        ...state,
+        cart: {
+          ...state.cart,
+          shippingAddress: action.payload,
+        },
+      }
     default:
       return state
   }

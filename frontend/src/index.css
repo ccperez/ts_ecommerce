@@ -39,7 +39,7 @@ img.thumbnail {
   border-radius: 3px;
   margin: 0.5rem 0;
   &:before {
-    content: '';
+    content: "";
     height: 100%;
     display: block;
     border-radius: 3px;
@@ -49,4 +49,15 @@ img.thumbnail {
 
 input#otp {
   text-align: center;
+  letter-spacing: 70px;
+}
+
+.checkout-steps > div {
+  border-bottom: 0.2rem solid #a0a0a0;
+  color: #a0a0a0;
+}
+
+.checkout-steps > div.active {
+  border-bottom: 0.2rem solid #f08000;
+  color: #f08000;
 }

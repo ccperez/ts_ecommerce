@@ -1,6 +1,6 @@
 import { toast } from 'react-toastify'
 import { Product } from '../../types/Product'
-import { CartItem } from '../../types/Cart'
+import { CartItem, ShippingAddress } from '../../types/Cart'
 import { Action } from '../../types/App'
 
 import { convertProductToCartItem } from '../../utils'
@@ -31,3 +31,8 @@ export const updateCart = (
 
 export const removeItem = (dispatch: React.Dispatch<Action>, item: CartItem) =>
   dispatch({ type: 'CART_REMOVE_ITEM', payload: item })
+
+export const shipping = (dispatch: React.Dispatch<Action>, shippingInfo: ShippingAddress) => {
+  dispatch({ type: 'SAVE_SHIPPING_ADDRESS', payload: shippingInfo })
+  localStorage.setItem('shippingAddress', JSON.stringify(shippingInfo))
+}
