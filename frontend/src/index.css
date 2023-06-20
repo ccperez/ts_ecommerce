@@ -61,3 +61,22 @@ input#otp {
   border-bottom: 0.2rem solid #f08000;
   color: #f08000;
 }
+
+.qty-hnt {
+  position: absolute;
+  bottom: 60px;
+  left: 5px;
+  padding: 6px;
+  font-size: 1rem;
+  background-color: #eeb868;
+  border-radius: 0.25em;
+}
+
+.qty-hnt-arrw {
+  position: absolute;
+  bottom: 54px;
+  left: 60px;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #eeb868;
+}

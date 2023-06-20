@@ -29,14 +29,13 @@ export default {
     },
     existItem: (cartItems: CartItem[], id: string) =>
       cartItems.find((item) => item._id === id),
-    checkStock: (countInStock: number, quantity: number) => {
-      if (countInStock < quantity) {
-        toast.warn('Quantity added is more than the current stock')
-        return true
-      }
-      return false
-    },
-    totalPrice: (item: CartItem) => (item.price * item.quantity),
+    checkStock: (countInStock: number, quantity: number) =>
+      countInStock < quantity
+        ? toast.warn('Quantity added more than the current stock')
+        : false,
+    itemQtyEQStock: (cartItems: CartItem[], id: string, stock:number) =>
+      cartItems.find((itm) => itm._id === id)?.quantity! >= stock,
+    totalPrice: (item: CartItem) => item.price * item.quantity,
     totalItems: (items: Array<CartItem>) =>
       items.reduce((a: number, c: CartItem) => a + c.quantity, 0),
     totalAmount: (items: Array<CartItem>) =>
