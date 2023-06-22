@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async'
 interface iCheckout {
   title: string,
   CheckoutSteps: JSX.Element,
-  submitHandler: (e: React.SyntheticEvent) => Promise<void>,
+  submitHandler: (e: React.SyntheticEvent) => void,
   userInputs: JSX.Element[] | any,
   formButton: JSX.Element
 }

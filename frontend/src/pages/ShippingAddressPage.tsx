@@ -28,13 +28,13 @@ export default function ShippingAddressPage() {
     if (!userInfo) navigate('/signin?redirect=shipping')
   }, [userInfo, navigate])
 
-  const submitHandler = async (e: React.SyntheticEvent) => {
+  const submitHandler = (e: React.SyntheticEvent) => {
     e.preventDefault()
     setIsLoading(true)
     const shippingInfo = { fullName, address, city, postalCode, country }
     shipping(dispatch, shippingInfo)
     setIsLoading(false)
-    // navigate('/payment')
+    navigate('/payment')
   }
 
   const changeHandler = (e: React.ChangeEvent<HTMLInputElement>, name: string) => {

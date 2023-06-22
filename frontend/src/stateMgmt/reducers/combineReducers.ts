@@ -4,7 +4,9 @@ import fn from '../../functions/cart'
 export default (state: AppState, action: Action): AppState => {
   switch (action.type) {
     case 'SWITCH_MODE':
-      return { ...state, mode: state.mode === 'dark' ? 'light' : 'dark' }
+      const mode = state.mode === 'dark' ? 'light' : 'dark'
+      localStorage.setItem('mode', mode)
+      return { ...state, mode }
     case 'CART_ADD_ITEM':
       return fn.cart.items.add(state, action.payload)
     case 'CART_REMOVE_ITEM':
@@ -37,10 +39,12 @@ export default (state: AppState, action: Action): AppState => {
     case 'SAVE_SHIPPING_ADDRESS':
       return {
         ...state,
-        cart: {
-          ...state.cart,
-          shippingAddress: action.payload,
-        },
+        cart: { ...state.cart, shippingAddress: action.payload },
+      }
+    case 'SAVE_PAYMENT_METHOD':
+      return {
+        ...state,
+        cart: { ...state.cart, paymentMethod: action.payload },
       }
     default:
       return state
