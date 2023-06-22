@@ -32,7 +32,18 @@ export const updateCart = (
 export const removeItem = (dispatch: React.Dispatch<Action>, item: CartItem) =>
   dispatch({ type: 'CART_REMOVE_ITEM', payload: item })
 
-export const shipping = (dispatch: React.Dispatch<Action>, shippingInfo: ShippingAddress) => {
+export const shipping = (
+  dispatch: React.Dispatch<Action>,
+  shippingInfo: ShippingAddress
+) => {
   dispatch({ type: 'SAVE_SHIPPING_ADDRESS', payload: shippingInfo })
   localStorage.setItem('shippingAddress', JSON.stringify(shippingInfo))
+}
+
+export const payment = (
+  dispatch: React.Dispatch<Action>,
+  paymentMethod: string
+) => {
+  dispatch({ type: 'SAVE_PAYMENT_METHOD', payload: paymentMethod })
+  localStorage.setItem('paymentMethod', paymentMethod)
 }

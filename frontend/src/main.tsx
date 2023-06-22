@@ -19,6 +19,7 @@ import SignInPage from './pages/SignInPage'
 import SignUpPage from './pages/SignUpPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
 import ShippingAddressPage from './pages/ShippingAddressPage'
+import PaymentMethodPage from './pages/PaymentMethodPage'
 import { StoreProvider } from './Store'
 
 const router = createBrowserRouter(
@@ -33,6 +34,7 @@ const router = createBrowserRouter(
       <Route path="reset_password" element={<ResetPasswordPage />} />
 
       <Route path="shipping" element={<ShippingAddressPage />} />
+      <Route path="payment" element={<PaymentMethodPage />} />
     </Route>
   )
 )
