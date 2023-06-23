@@ -28,7 +28,7 @@ export default function ProductPage() {
 
   const addToCartHandler = () => {
     addToCart(dispatch, cartItems, product!)
-    toast.success('Product added to the cart')
+    // toast.success('Product added to the cart')
     navigate('/')
   }
 

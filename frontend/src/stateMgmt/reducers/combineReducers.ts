@@ -11,6 +11,8 @@ export default (state: AppState, action: Action): AppState => {
       return fn.cart.items.add(state, action.payload)
     case 'CART_REMOVE_ITEM':
       return fn.cart.items.remove(state, action.payload)
+    case 'CART_CLEAR':
+      return { ...state, cart: { ...state.cart, cartItems: [] } }
     case 'USER_SIGNIN':
       return { ...state, userInfo: action.payload }
     case 'USER_SIGNOUT':

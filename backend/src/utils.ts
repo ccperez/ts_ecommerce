@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import { User } from './models/userModel'
+import { ProductModel } from './models/productModel'
 
 type UserInfo = {
   _id: string
@@ -27,4 +28,17 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
   } else {
     res.status(401).json({ message: 'No Token' })
   }
+}
+
+export const stockUpdate = (type: string, orderItems: any) => {
+  orderItems.map(async (itm: any) => {
+    const product = await ProductModel.findById(itm._id)
+    if (product) {
+      product.countInStock =
+        type === 'Decrement'
+          ? product.countInStock - itm.quantity
+          : product.countInStock + itm.quantity
+      await product.save()
+    }
+  })
 }

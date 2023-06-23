@@ -13,7 +13,7 @@ import fn from '../functions/common'
 
 export default function ShippingAddressPage() {
   const navigate = useNavigate()
-  const { state: { userInfo, cart: { shippingAddress } }, dispatch } = useContext(Store)
+  const { state: { cart: { shippingAddress } }, dispatch } = useContext(Store)
 
   const [fullName, setFullName] = useState(shippingAddress.fullName || '')
   const [address, setAddress] = useState(shippingAddress.address || '')
@@ -23,10 +23,6 @@ export default function ShippingAddressPage() {
 
   const [isValid, setIsValid] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-
-  useEffect(() => {
-    if (!userInfo) navigate('/signin?redirect=shipping')
-  }, [userInfo, navigate])
 
   const submitHandler = (e: React.SyntheticEvent) => {
     e.preventDefault()
@@ -41,7 +37,7 @@ export default function ShippingAddressPage() {
     setIsValid(false)
     const { value } = e.target
     switch (name) {
-      case 'fullname':
+      case 'fullName':
         return setFullName(value)
       case 'address':
         return setAddress(value)

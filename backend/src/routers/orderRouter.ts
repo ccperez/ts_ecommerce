@@ -1,32 +1,17 @@
 import express, { Request, Response } from 'express'
 import asyncHandler from 'express-async-handler'
 import { OrderModel } from '../models/orderModel'
-import { Product, ProductModel } from '../models/productModel'
-import { isAuth } from '../utils'
+import { isAuth, stockUpdate } from '../utils'
 
 export const orderRouter = express.Router()
-
-const productStock = (type: string, orderItems: any) => {
-  orderItems.map(async (itm: any) => {
-    const product = await ProductModel.findById(itm._id)
-    if (product) {
-      product.countInStock
-      type === 'Decrement'
-        ? product.countInStock - itm.quantity
-        : product.countInStock + itm.quantity
-      await product.save()
-    }
-  })
-}
 
 orderRouter.post(
   '/',
   isAuth,
   asyncHandler(async (req: Request, res: Response) => {
-    const orderItems = req.body.orderItems
-    if (orderItems) {
+    if (req.body.orderItems) {
       const createdOrder = await OrderModel.create({
-        orderItems: orderItems.map((p: Product) => ({ ...p, product: p._id })),
+        orderItems: req.body.orderItems,
         shippingAddress: req.body.shippingAddress,
         paymentMethod: req.body.paymentMethod,
         itemsPrice: req.body.itemsPrice,
@@ -35,7 +20,7 @@ orderRouter.post(
         totalPrice: req.body.totalPrice,
         user: req.user._id,
       })
-      productStock('Decrement', orderItems)
+      stockUpdate('Decrement', req.body.orderItems)
       res.status(201).json({ message: 'Order Created', order: createdOrder })
       return
     }
