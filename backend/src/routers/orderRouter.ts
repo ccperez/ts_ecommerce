@@ -5,6 +5,17 @@ import { isAuth, stockUpdate } from '../utils'
 
 export const orderRouter = express.Router()
 
+orderRouter.get(
+  '/:id',
+  isAuth,
+  asyncHandler(async (req: Request, res: Response) => {
+    const order = await OrderModel.findById(req.params.id)
+    order
+      ? res.json(order)
+      : res.status(404).json({ message: 'Order Not Found' })
+  })
+)
+
 orderRouter.post(
   '/',
   isAuth,

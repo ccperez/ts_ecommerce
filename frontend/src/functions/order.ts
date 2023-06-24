@@ -1,4 +1,4 @@
-import { CartItem, Cart } from '../types/Cart'
+import { CartItem, Cart, ShippingAddress } from '../types/Cart'
 import fn from './cart'
 
 const round2 = (num: number) => Math.round(num * 100 + Number.EPSILON) / 100 // 123.2345 => 123.23

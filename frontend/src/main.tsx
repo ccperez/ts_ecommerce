@@ -21,6 +21,7 @@ import ResetPasswordPage from './pages/ResetPasswordPage'
 import ShippingAddressPage from './pages/ShippingAddressPage'
 import PaymentMethodPage from './pages/PaymentMethodPage'
 import PlaceOrderPage from './pages/PlaceOrderPage'
+import OrderPage from './pages/OrderPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import { StoreProvider } from './Store'
 
@@ -39,6 +40,7 @@ const router = createBrowserRouter(
         <Route path="shipping" element={<ShippingAddressPage />} />
         <Route path="payment" element={<PaymentMethodPage />} />
         <Route path="placeorder" element={<PlaceOrderPage />} />
+        <Route path="/order/:id" element={<OrderPage />} />
       </Route>
     </Route>
   )
