@@ -63,7 +63,7 @@ export default function CartPage() {
                       </Button>
                     </Col>
                     <Col md={1}>${item.price}</Col>
-                    <Col md={2}>${fn.cart.totalPrice(item)}</Col>
+                    <Col md={2}>${item.quantity * item.price}</Col>
                     <Col md={2}>
                       <Button variant={mode} onClick={() => removeItemHandler(item)}>
                         <i className="fas fa-trash" />
@@ -81,7 +81,7 @@ export default function CartPage() {
               <ListGroup variant="flush">
                 <ListGroup.Item>
                   <h3>
-                    Subtotal ({fn.cart.totalItems(cartItems)}{' '}items) : ${fn.cart.totalAmount(cartItems)}
+                    Subtotal ({fn.cart.totalItems(cartItems)}{' '}items) : ${fn.cart.itemsPrice(cartItems)}
                   </h3>
                 </ListGroup.Item>
                 <ListGroup.Item>

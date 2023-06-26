@@ -11,17 +11,17 @@ import { Store } from '../Store'
 import { ApiError } from '../types/ApiError'
 import { getError } from '../utils'
 import { useCreateOrderMutation } from '../hooks/orderHooks'
-import fn from '../functions/order'
+import fn from '../functions/cart'
 
 export default function PlaceOrderPage() {
   const navigate = useNavigate()
 
   const { state: { cart }, dispatch } = useContext(Store)
 
-  cart.itemsPrice = fn.order.itemsPrice(cart.cartItems)
-  cart.shippingPrice = fn.order.shippingPrice(cart.itemsPrice)
-  cart.taxPrice = fn.order.taxPrice(cart.itemsPrice)
-  cart.totalPrice = fn.order.totalPrice(cart)
+  cart.itemsPrice = fn.cart.itemsPrice(cart.cartItems)
+  cart.shippingPrice = fn.cart.shippingPrice(cart.itemsPrice)
+  cart.taxPrice = fn.cart.taxPrice(cart.itemsPrice)
+  cart.totalPrice = fn.cart.totalPrice(cart)
 
   const { mutateAsync: createOrder, isLoading } = useCreateOrderMutation()
 

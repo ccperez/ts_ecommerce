@@ -14,9 +14,9 @@ export const CardContainer = (
       <Card.Title className='text-capitalize'>{title}</Card.Title>
       {children}
       {order
-        ? order.isDelivered
+        ? title === 'shipping' && order.isDelivered
           ? <Message variant="success">Delivered at {order.deliveredAt}</Message>
-          : order.isPaid
+          : title === 'payment' && order.isPaid
             ? <Message variant="success">Paid at {order.paidAt}</Message>
             : <>
               {title === 'shipping' && <Message variant="warning">Not Delivered</Message>}
@@ -86,7 +86,7 @@ const RowItem = ({ title, item }: { title: string, item: string }) =>
 
 export const Summary = (
   { itemsPrice, shippingPrice, taxPrice, totalPrice, buttonComponent }:
-    { itemsPrice: number, shippingPrice: number, taxPrice: number, totalPrice: number, buttonComponent?: JSX.Element }
+    { itemsPrice: number, shippingPrice: number, taxPrice: number, totalPrice: number, buttonComponent?: any }
 ) =>
   <ListGroup variant="flush">
     <RowItem title='Items' item={itemsPrice.toFixed(2)} />

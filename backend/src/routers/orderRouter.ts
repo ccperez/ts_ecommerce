@@ -38,3 +38,28 @@ orderRouter.post(
     res.status(400).json({ message: 'No ordered items or Cart is empty' })
   })
 )
+
+orderRouter.put(
+  '/:id/pay',
+  isAuth,
+  asyncHandler(async (req: Request, res: Response) => {
+    const order = await OrderModel.findById(req.params.id)
+
+    if (order) {
+      const { id, status, update_time, email_address } = req.body
+
+      order.isPaid = true
+      order.paidAt = new Date(Date.now())
+      order.paymentResult = {
+        paymentId: id,
+        status,
+        update_time,
+        email_address,
+      }
+      const updatedOrder = await order.save()
+      res.send({ message: 'Order Paid Successfully', order: updatedOrder })
+    } else {
+      res.status(404).json({ message: 'Order Not Found' })
+    }
+  })
+)

@@ -24,6 +24,10 @@ export default function ShippingAddressPage() {
   const [isValid, setIsValid] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
+  useEffect(() => {
+    setIsValid(fn.hasError('shipping'))
+  }, [])
+
   const submitHandler = (e: React.SyntheticEvent) => {
     e.preventDefault()
     setIsLoading(true)
