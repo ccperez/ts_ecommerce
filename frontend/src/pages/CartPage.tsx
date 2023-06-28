@@ -81,7 +81,7 @@ export default function CartPage() {
               <ListGroup variant="flush">
                 <ListGroup.Item>
                   <h3>
-                    Subtotal ({fn.cart.totalItems(cartItems)}{' '}items) : ${fn.cart.itemsPrice(cartItems)}
+                    Total ({fn.cart.totalItems(cartItems)}{' '}items) : ${fn.cart.itemsPrice(cartItems)}
                   </h3>
                 </ListGroup.Item>
                 <ListGroup.Item>
