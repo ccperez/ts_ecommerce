@@ -38,13 +38,14 @@ img.thumbnail {
   background-color: lightgrey;
   border-radius: 3px;
   margin: 0.5rem 0;
-  &:before {
-    content: "";
-    height: 100%;
-    display: block;
-    border-radius: 3px;
-    transition: width 0.2s;
-  }
+}
+
+.password-strength-meter::before {
+  content: "";
+  height: 100%;
+  display: block;
+  border-radius: 3px;
+  transition: width 0.2s;
 }
 
 input#otp {
