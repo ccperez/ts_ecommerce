@@ -1,7 +1,10 @@
 import express, { Request, Response } from 'express'
 import mongoose from 'mongoose'
+
+import cors from 'cors'
 import dotenv from 'dotenv'
 import path from 'path'
+
 import { productRouter } from './routers/productRouter'
 import { seedRouter } from './routers/seedRouter'
 import { userRouter } from './routers/userRouter'
@@ -10,13 +13,24 @@ import { keyRouter } from './routers/keyRouter'
 
 dotenv.config()
 
+const { NODE_ENV, MONGODB_URI } = process.env
+
 mongoose.set('strictQuery', true)
 mongoose
-  .connect(process.env.PRD_MONGODB_URI)
+  .connect(MONGODB_URI)
   .then(() => console.log('connected to mongodb'))
   .catch(() => console.log('error mongodb'))
 
 const app = express()
+
+if (NODE_ENV === 'dev') {
+  app.use(
+    cors({
+      credentials: true,
+      origin: [process.env.CLIENT_URL],
+    })
+  )
+}
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
