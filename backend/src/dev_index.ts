@@ -1,3 +1,4 @@
+import cors from 'cors'
 import express, { Request, Response } from 'express'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
@@ -10,13 +11,22 @@ import { keyRouter } from './routers/keyRouter'
 
 dotenv.config()
 
+const { CLIENT_URL, DEV_MONGODB_URI } = process.env
+
 mongoose.set('strictQuery', true)
 mongoose
-  .connect(process.env.PRD_MONGODB_URI)
+  .connect(DEV_MONGODB_URI)
   .then(() => console.log('connected to mongodb'))
   .catch(() => console.log('error mongodb'))
 
 const app = express()
+
+app.use(
+  cors({
+    credentials: true,
+    origin: [CLIENT_URL],
+  })
+)
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))

@@ -5,7 +5,12 @@ dotenv.config()
 
 const from = '"DomainEmail" <info@emaildomain.com>'
 
-const { EMAIL_HOST, EMAIL_PORT, EMAIL_USER, EMAIL_PASSWORD } = process.env
+const { EMAIL_HOST, EMAIL_USER, EMAIL_PASSWORD } = process.env
+
+const EMAIL_PORT: number = parseInt(
+  (process.env.EMAIL_PORT || '2525') as string,
+  10
+)
 
 const setup = nodemailer.createTransport({
   host: EMAIL_HOST,

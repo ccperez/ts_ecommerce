@@ -2,7 +2,6 @@ import { useContext } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { Row, Col, Card, ListGroup, Badge, Button } from 'react-bootstrap'
-import { toast } from 'react-toastify'
 
 import Message from '../components/Message'
 import Loading from '../components/Loading'
@@ -28,7 +27,6 @@ export default function ProductPage() {
 
   const addToCartHandler = () => {
     addToCart(dispatch, cartItems, product!)
-    // toast.success('Product added to the cart')
     navigate('/')
   }
 

@@ -1,4 +1,3 @@
-import { toast } from 'react-toastify'
 import { Product } from '../../types/Product'
 import { CartItem, ShippingAddress } from '../../types/Cart'
 import { Action } from '../../types/App'
@@ -17,7 +16,6 @@ export const addToCart = (
 
   if (fn.cart.checkStock(product.countInStock, quantity)) return
   dispatch({ type: 'CART_ADD_ITEM', payload: { ...newItem, quantity } })
-  // toast.success('Product added to the cart')
 }
 
 export const updateCart = (

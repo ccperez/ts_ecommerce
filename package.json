@@ -1,0 +1,14 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "cd backend && npm i && npm run build  && cd ../frontend && npm i && npm run build && cp -r dist ../backend/",
+    "start": "TG_ALLOW_MIXED=ALLOW  node backend/build/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
