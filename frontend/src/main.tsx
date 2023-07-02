@@ -20,6 +20,7 @@ import CartPage from './pages/CartPage'
 import SignInPage from './pages/SignInPage'
 import SignUpPage from './pages/SignUpPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
+import ProfilePage from './pages/ProfilePage'
 import ShippingAddressPage from './pages/ShippingAddressPage'
 import PaymentMethodPage from './pages/PaymentMethodPage'
 import PlaceOrderPage from './pages/PlaceOrderPage'
@@ -45,6 +46,8 @@ const router = createBrowserRouter(
         <Route path="placeorder" element={<PlaceOrderPage />} />
         <Route path="/order/:id" element={<OrderPage />} />
         <Route path="orderhistory" element={<OrderHistoryPage />} />
+
+        <Route path="/profile" element={<ProfilePage />} />
       </Route>
     </Route>
   )

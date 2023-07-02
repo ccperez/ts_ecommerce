@@ -32,6 +32,18 @@ export const useSignUpMutation = () =>
       ).data,
   })
 
+export const useUpdateProfileMutation = () =>
+  useMutation({
+    mutationFn: async ({ name, email, password }: signUpProps) =>
+      (
+        await apiClient.put<UserInfo>(`api/users/profile`, {
+          name,
+          email,
+          password,
+        })
+      ).data,
+  })
+
 export const userPasswordMutation = () =>
   useMutation({
     mutationFn: async (sendData: { data: string }) =>

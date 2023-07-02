@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express'
 import asyncHandler from 'express-async-handler'
 import bcrypt from 'bcryptjs'
 import { User, UserModel } from '../models/userModel'
-import { generateToken } from '../utils'
+import { generateToken, isAuth } from '../utils'
 import { emailResetPasswordOTP } from '../mailer'
 
 export const userRouter = express.Router()
@@ -61,5 +61,24 @@ userRouter.post(
       return
     }
     res.status(400).json({ message: 'Email provided not exits' })
+  })
+)
+
+userRouter.put(
+  '/profile',
+  isAuth,
+  asyncHandler(async (req: Request, res: Response) => {
+    const user = await UserModel.findById(req.user._id)
+    if (user) {
+      user.name = req.body.name || user.name
+      user.email = req.body.email || user.email
+      if (req.body.password) user.password = bcrypt.hashSync(req.body.password)
+      const updatedUser = await user.save()
+      const { _id, name, email, isAdmin } = updatedUser
+      const token = generateToken(user)
+      res.json({ _id, name, email, isAdmin, token })
+      return
+    }
+    res.status(404).json({ message: 'User not found' })
   })
 )

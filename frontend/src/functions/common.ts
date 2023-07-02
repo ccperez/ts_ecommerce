@@ -17,6 +17,7 @@ export default {
     if (getForm('signIn')) localStorage.removeItem('signIn')
     if (getForm('signUp')) localStorage.removeItem('signUp')
     if (getForm('resetPassword')) localStorage.removeItem('resetPassword')
+    if (getForm('profile')) localStorage.removeItem('profile')
   },
   emailProtect: (email: string) =>
     email.replace(/(\w{2})[\w.-]+@([\w.]+\w)/, '$1****@$2'),
