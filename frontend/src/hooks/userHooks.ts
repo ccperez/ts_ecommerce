@@ -49,7 +49,7 @@ export const userPasswordMutation = () =>
     mutationFn: async (sendData: { data: string }) =>
       (
         await apiClient.post<{ data: string }>(
-          `/api/users/password/reset`,
+          `api/users/password/reset`,
           sendData
         )
       ).data,

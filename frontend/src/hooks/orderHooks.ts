@@ -13,14 +13,14 @@ export const useGetPaypalClientIdQuery = () =>
   useQuery({
     queryKey: ['paypal-clientId'],
     queryFn: async () =>
-      (await apiClient.get<{ clientId: string }>(`/api/keys/paypal`)).data,
+      (await apiClient.get<{ clientId: string }>(`api/keys/paypal`)).data,
   })
 
 export const useGetOrderHistoryQuery = () =>
   useQuery({
     queryKey: ['order-history'],
     queryFn: async () =>
-      (await apiClient.get<iOrdered[]>(`/api/orders/history`)).data,
+      (await apiClient.get<iOrdered[]>(`api/orders/history`)).data,
   })
 
 export const usePayOrderMutation = () =>

@@ -17,6 +17,7 @@ export default {
     if (getForm('signIn')) localStorage.removeItem('signIn')
     if (getForm('signUp')) localStorage.removeItem('signUp')
     if (getForm('resetPassword')) localStorage.removeItem('resetPassword')
+    if (getForm('shipping')) localStorage.removeItem('shipping')
     if (getForm('profile')) localStorage.removeItem('profile')
   },
   emailProtect: (email: string) =>

@@ -16,6 +16,7 @@ import App from './App.tsx'
 import './index.css'
 import HomePage from './pages/HomePage'
 import ProductPage from './pages/ProductPage'
+import SearchPage from './pages/SearchPage';
 import CartPage from './pages/CartPage'
 import SignInPage from './pages/SignInPage'
 import SignUpPage from './pages/SignUpPage'
@@ -27,6 +28,7 @@ import PlaceOrderPage from './pages/PlaceOrderPage'
 import OrderPage from './pages/OrderPage'
 import OrderHistoryPage from './pages/OrderHistoryPage'
 import ProtectedRoute from './components/ProtectedRoute'
+import ErrorBoundary from './components/ErrorBoundary.tsx'
 import { StoreProvider } from './Store'
 
 const router = createBrowserRouter(
@@ -34,6 +36,7 @@ const router = createBrowserRouter(
     <Route path="/" element={<App />}>
       <Route index={true} element={<HomePage />} />
       <Route path="product/:slug" element={<ProductPage />} />
+      <Route path="search" element={<SearchPage />} errorElement={<ErrorBoundary />} />
       <Route path="cart" element={<CartPage />} />
 
       <Route path="signin" element={<SignInPage />} />
