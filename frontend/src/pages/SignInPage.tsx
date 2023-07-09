@@ -36,8 +36,8 @@ export default function SignInPage() {
     e.preventDefault()
 
     try {
-      const data = await signin({ email, password })
-      login(dispatch, data)
+      // const data = await signin({ email, password })
+      login(dispatch, (await signin({ email, password })))
       navigate(redirect)
     } catch (err) {
       toast.error(getError(err as ApiError))

@@ -29,8 +29,8 @@ export default function ProfilePage() {
   const submitHandler = async (e: React.SyntheticEvent) => {
     e.preventDefault()
     try {
-      const data = await updateProfile({ name, email, password })
-      login(dispatch, data)
+      // const data = await updateProfile({ name, email, password })
+      login(dispatch, (await updateProfile({ name, email, password })))
       toast.success('User updated successfully')
     } catch (err) {
       toast.error(getError(err as ApiError))

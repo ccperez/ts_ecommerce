@@ -38,8 +38,8 @@ export default function SignUpPage() {
     e.preventDefault()
 
     try {
-      const data = await signup({ name, email, password })
-      login(dispatch, data)
+      // const data = await signup({ name, email, password })
+      login(dispatch, (await signup({ name, email, password })))
       navigate(redirect)
     } catch (err) {
       toast.error(getError(err as ApiError))
