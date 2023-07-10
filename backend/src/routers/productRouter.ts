@@ -30,7 +30,7 @@ productRouter.get(
     const category = query.category || ''
     const price = <string>query.price || ''
     const rating = query.rating || ''
-    const order = query.order || ''
+    const order = <string>query.order || ''
     const searchQuery = query.query || ''
 
     const queryFilter =
@@ -50,7 +50,7 @@ productRouter.get(
             },
           }
         : {}
-    const sortOrder =
+    const sortOrder: any =
       order === 'featured'
         ? { featured: -1 }
         : order === 'lowest'
