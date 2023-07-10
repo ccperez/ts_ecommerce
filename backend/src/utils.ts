@@ -30,6 +30,11 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
   }
 }
 
+export const isAdmin = (req: Request, res: Response, next: NextFunction) =>
+  req.user && req.user.isAdmin
+    ? next()
+    : res.status(401).send({ message: 'Invalid Admin Token' })
+
 export const stockUpdate = (type: string, orderItems: any) => {
   orderItems.map(async (itm: any) => {
     const product = await ProductModel.findById(itm._id)

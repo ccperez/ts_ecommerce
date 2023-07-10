@@ -1,7 +1,9 @@
 import express, { Request, Response } from 'express'
 import asyncHandler from 'express-async-handler'
 import { Order, OrderModel } from '../models/orderModel'
-import { isAuth, stockUpdate } from '../utils'
+import { ProductModel } from '../models/productModel'
+import { UserModel } from '../models/userModel'
+import { isAuth, isAdmin, stockUpdate } from '../utils'
 
 export const orderRouter = express.Router()
 
@@ -11,6 +13,50 @@ orderRouter.get(
   asyncHandler(async (req: Request, res: Response) => {
     const orders = await OrderModel.find({ user: req.user._id })
     res.json(orders)
+  })
+)
+
+orderRouter.get(
+  '/summary',
+  isAuth,
+  isAdmin,
+  asyncHandler(async (req: Request, res: Response) => {
+    const orders = await OrderModel.aggregate([
+      {
+        $group: {
+          _id: { $toString: null },
+          numOrders: { $sum: 1 },
+          totalSales: { $sum: '$totalPrice' },
+        },
+      },
+    ])
+    const users = await UserModel.aggregate([
+      {
+        $group: {
+          _id: { $toString: null },
+          numUsers: { $sum: 1 },
+        },
+      },
+    ])
+    const dailyOrders = await OrderModel.aggregate([
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          orders: { $sum: 1 },
+          sales: { $sum: '$totalPrice' },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ])
+    const productCategories = await ProductModel.aggregate([
+      {
+        $group: {
+          _id: '$category',
+          count: { $sum: 1 },
+        },
+      },
+    ])
+    res.json({ users, orders, dailyOrders, productCategories })
   })
 )
 

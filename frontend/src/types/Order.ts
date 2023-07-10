@@ -20,3 +20,32 @@ export interface iOrdered extends iOrder {
   isDelivered: boolean
   deliveredAt: string
 }
+
+export interface iOrderSummary {
+  users: [
+    {
+      _id: string
+      numUsers: number
+    }
+  ]
+  orders: [
+    {
+      _id: string
+      numOrders: number
+      totalSales: number
+    }
+  ]
+  dailyOrders: [
+    {
+      _id: string
+      orders: number
+      sales: number
+    }
+  ]
+  productCategories: [
+    {
+      _id: string
+      count: number
+    }
+  ]
+}

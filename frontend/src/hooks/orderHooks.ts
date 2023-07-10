@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import apiClient from '../apiClient'
-import { iOrder, iOrdered } from '../types/Order'
+import { iOrder, iOrdered, iOrderSummary } from '../types/Order'
 
 export const useGetOrderDetailsQuery = (id: string) =>
   useQuery({
@@ -21,6 +21,13 @@ export const useGetOrderHistoryQuery = () =>
     queryKey: ['order-history'],
     queryFn: async () =>
       (await apiClient.get<iOrdered[]>(`api/orders/history`)).data,
+  })
+
+export const useGetOrderSummaryQuery = () =>
+  useQuery({
+    queryKey: ['order-summary'],
+    queryFn: async () =>
+      (await apiClient.get<iOrderSummary>(`api/orders/summary`)).data,
   })
 
 export const usePayOrderMutation = () =>

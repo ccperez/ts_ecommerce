@@ -27,11 +27,11 @@ productRouter.get(
     const { query } = req
     const pageSize = parseInt(<string>query.pageSize) || PAGE_SIZE
     const page = parseInt(<string>query.page) || 1
-    const category = query.category || ''
+    const category = <string>query.category || ''
     const price = <string>query.price || ''
-    const rating = query.rating || ''
-    const order = query.order || ''
-    const searchQuery = query.query || ''
+    const rating = <string>query.rating || ''
+    const order = <string>query.order || ''
+    const searchQuery = <string>query.query || ''
 
     const queryFilter =
       searchQuery && searchQuery !== 'all'
@@ -50,7 +50,7 @@ productRouter.get(
             },
           }
         : {}
-    const sortOrder =
+    const sortOrder: any =
       order === 'featured'
         ? { featured: -1 }
         : order === 'lowest'
