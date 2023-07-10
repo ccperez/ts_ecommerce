@@ -27,9 +27,13 @@ import PaymentMethodPage from './pages/PaymentMethodPage'
 import PlaceOrderPage from './pages/PlaceOrderPage'
 import OrderPage from './pages/OrderPage'
 import OrderHistoryPage from './pages/OrderHistoryPage'
+import DashboardPage from './pages/admin/DashboardPage'
+
+import ErrorBoundary from './components/ErrorBoundary.tsx'
+
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminRoute from './components/AdminRoute'
-import ErrorBoundary from './components/ErrorBoundary.tsx'
+
 import { StoreProvider } from './Store'
 
 const router = createBrowserRouter(
@@ -51,11 +55,11 @@ const router = createBrowserRouter(
         <Route path="/order/:id" element={<OrderPage />} />
         <Route path="orderhistory" element={<OrderHistoryPage />} />
 
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="profile" element={<ProfilePage />} />
       </Route>
 
       <Route path="" element={<AdminRoute />}>
-        <Route path="/admin/dasboard" element="<DashBoardPage />" />
+        <Route path="admin/dashboard" element={<DashboardPage />} />
       </Route>
     </Route>
   )
