@@ -158,7 +158,7 @@ export default function SearchPage() {
         <LinkContainer
           key={x + 1}
           className="mx-1"
-          to={{ pathname: '/search', search: filterUrl({ page: x + 1 }) }}
+          to={searchItem({ page: x + 1 })}
         >
           <Button
             className={Number(page) === x + 1 ? 'text-bold' : ''}
@@ -180,6 +180,10 @@ export default function SearchPage() {
       )}
     </Row>
   )
+
+  const searchItem = (item: any): { pathname: string, search: any } => {
+    return { pathname: '', search: filterUrl(item) }
+  }
 
   return (
     <div>
