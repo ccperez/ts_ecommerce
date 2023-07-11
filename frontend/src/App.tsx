@@ -31,6 +31,10 @@ function App() {
 
   const signoutHandler = () => logout(dispatch)
 
+  const searchCategory = (category: any): { pathname: string, search: string } => {
+    return { pathname: '/search', search: `category=${category}` }
+  }
+
   return (
     <div className="d-flex flex-column vh-100">
       <ToastContainer position="bottom-center" limit={1} />
@@ -194,7 +198,7 @@ function App() {
             categories!.map(category => (
               <ListGroup.Item action key={category}>
                 <LinkContainer
-                  to={{ pathname: '/search', search: `category=${category}` }}
+                  to={searchCategory(category)}
                   onClick={() => setSidebarIsOpen(false)}
                 >
                   <Nav.Link>{category}</Nav.Link>
