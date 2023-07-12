@@ -40,6 +40,13 @@ export const useGetSearchProductsQuery = ({
       ).data,
   })
 
+export const useGetAdminProductsQuery = ({ page }: { page: string | number }) =>
+  useQuery({
+    queryKey: ['products', page],
+    queryFn: async () =>
+      (await apiClient.get<Product[]>(`api/products/admin?page=${page}`)).data,
+  })
+
 export const useGetProductDetailsBySlugQuery = (slug: string) =>
   useQuery({
     queryKey: ['products', slug],

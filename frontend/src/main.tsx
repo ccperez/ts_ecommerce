@@ -14,20 +14,26 @@ import { PayPalScriptProvider } from '@paypal/react-paypal-js'
 
 import App from './App.tsx'
 import './index.css'
+
 import HomePage from './pages/HomePage'
 import ProductPage from './pages/ProductPage'
 import SearchPage from './pages/SearchPage';
 import CartPage from './pages/CartPage'
+
 import SignInPage from './pages/SignInPage'
 import SignUpPage from './pages/SignUpPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
 import ProfilePage from './pages/ProfilePage'
+
 import ShippingAddressPage from './pages/ShippingAddressPage'
 import PaymentMethodPage from './pages/PaymentMethodPage'
+
 import PlaceOrderPage from './pages/PlaceOrderPage'
 import OrderPage from './pages/OrderPage'
 import OrderHistoryPage from './pages/OrderHistoryPage'
+
 import DashboardPage from './pages/admin/DashboardPage'
+import ProductListPage from './pages/admin/ProductListPage'
 
 import ErrorBoundary from './components/ErrorBoundary.tsx'
 
@@ -60,6 +66,7 @@ const router = createBrowserRouter(
 
       <Route path="" element={<AdminRoute />}>
         <Route path="admin/dashboard" element={<DashboardPage />} />
+        <Route path="admin/products" element={<ProductListPage />} />
       </Route>
     </Route>
   )

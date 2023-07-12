@@ -1,8 +1,11 @@
 import express, { Request, Response } from 'express'
 import asyncHandler from 'express-async-handler'
 import { ProductModel } from '../models/productModel'
+import { isAuth, isAdmin } from '../utils'
 
 export const productRouter = express.Router()
+
+const PAGE_SIZE = 2
 
 productRouter.get(
   '/',
@@ -23,7 +26,6 @@ productRouter.get(
 productRouter.get(
   '/search',
   asyncHandler(async (req: Request, res: Response) => {
-    const PAGE_SIZE = 2
     const { query } = req
     const pageSize = parseInt(<string>query.pageSize) || PAGE_SIZE
     const page = parseInt(<string>query.page) || 1
@@ -96,5 +98,30 @@ productRouter.get(
     !product
       ? res.status(404).json({ message: 'Product Not Found' })
       : res.json(product)
+  })
+)
+
+productRouter.get(
+  '/admin',
+  isAuth,
+  isAdmin,
+  asyncHandler(async (req: Request, res: Response) => {
+    const { query } = req
+    const pageSize = parseInt(<string>query.pageSize) || PAGE_SIZE
+    const page = parseInt(<string>query.page) || 1
+
+    const products = await ProductModel.find()
+      .sort({ _id: -1 })
+      .skip(pageSize * (page - 1))
+      .limit(pageSize)
+
+    const countProducts = await ProductModel.countDocuments()
+
+    res.json({
+      products,
+      countProducts,
+      page,
+      pages: Math.ceil(countProducts / pageSize),
+    })
   })
 )
