@@ -14,7 +14,7 @@ export default function ProductListPage() {
   const navigate = useNavigate()
   const { search } = useLocation()
   const sp = new URLSearchParams(search)
-  const page = sp.get('page') || 1
+  const page = sp.get('page') || '1'
 
   const { data, isLoading, error } = useGetAdminProductsQuery({ page })
 
@@ -29,6 +29,36 @@ export default function ProductListPage() {
   const deleteProductHandler = (id: string) =>
     alert(`deleteProduct(${id})`)
 
+  const PageLink = ({ type, page, text }: { type: string, page: string, text: JSX.Element | number }) => {
+    const pg = parseInt(page)
+
+    let disabledLink = ''
+    if (type === 'p' && pg === 1)
+      disabledLink = ' disabled'
+    if (type === 'n' && pg === filter.pages)
+      disabledLink = ' disabled'
+    if (type === 'x' && pg === text)
+      disabledLink = ' disabled'
+    if (type === 'f' && pg === 1)
+      disabledLink = ' disabled'
+    if (type === 'l' && pg === filter.pages)
+      disabledLink = ' disabled'
+
+    let pgNv
+    if (type === 'f') pgNv = 1
+    if (type === 'x') pgNv = text
+    if (type === 'l') pgNv = filter.pages
+    if (type === 'p' && pg > 1) pgNv = pg - 1
+    if (type === 'n' && (pg > 0 && pg < filter.pages)) pgNv = pg + 1
+
+    return (
+      <li className={`page-item${disabledLink}`}>
+        <Link className="page-link" to={`/admin/products?page=${pgNv}`} >
+          {text}
+        </Link>
+      </li>
+    )
+  }
 
   return (
     <div>
@@ -100,17 +130,13 @@ export default function ProductListPage() {
           </table>
           <nav>
             <ul className="pagination">
+              <PageLink type="f" page={page} text={<span>«</span>} />
+              <PageLink type="p" page={page} text={<span>‹</span>} />
               {[...Array(filter.pages).keys()].map((x) => (
-                <li className="page-item">
-                  <Link
-                    key={x + 1}
-                    to={`/admin/products?page=${x + 1}`}
-                    className='page-link'
-                  >
-                    {x + 1}
-                  </Link>
-                </li>
+                <PageLink type="x" page={page} text={x + 1} key={x + 1} />
               ))}
+              <PageLink type="n" page={page} text={<span>›</span>} />
+              <PageLink type="l" page={page} text={<span>»</span>} />
             </ul>
           </nav>
         </>
