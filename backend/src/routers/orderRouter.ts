@@ -24,7 +24,7 @@ orderRouter.get(
     const orders = await OrderModel.aggregate([
       {
         $group: {
-          _id: { $toString: null },
+          _id: { $toString: '' },
           numOrders: { $sum: 1 },
           totalSales: { $sum: '$totalPrice' },
         },
@@ -33,7 +33,7 @@ orderRouter.get(
     const users = await UserModel.aggregate([
       {
         $group: {
-          _id: { $toString: null },
+          _id: { $toString: '' },
           numUsers: { $sum: 1 },
         },
       },

@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async'
+import { toast } from 'react-toastify'
 import { Button, Col, Row } from 'react-bootstrap'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 
@@ -8,7 +9,12 @@ import Message from '../../components/Message'
 import { Product } from '../../types/Product'
 import { getError } from '../../utils'
 import { ApiError } from '../../types/ApiError'
-import { useGetAdminProductsQuery } from '../../hooks/productHooks'
+
+import {
+  useGetAdminProductsQuery,
+  useCreateProductMutation,
+  useDeleteProductMutation
+} from '../../hooks/productHooks'
 
 export default function ProductListPage() {
   const navigate = useNavigate()
@@ -17,22 +23,39 @@ export default function ProductListPage() {
   const page = sp.get('page') || '1'
 
   const { data, isLoading, error } = useGetAdminProductsQuery({ page })
+  const { mutateAsync: createProduct } = useCreateProductMutation()
+  const { mutateAsync: deleteProduct } = useDeleteProductMutation()
 
   const filter: any = data || []
 
-  const createProductHandler = () =>
-    alert(`createProduct`)
+  const createProductHandler = async () => {
+    if (window.confirm('Are you sure you want to create product?')) {
+      const product = await createProduct()
+      toast.success('product created successfully')
+      navigate(`/admin/product/${product._id}?page=${page}`)
+    }
+  }
 
   const editProductHandler = (id: string) =>
-    alert(`/admin/products/${id}`)
+    navigate(`/admin/product/${id}?page=${page}`)
 
-  const deleteProductHandler = (id: string) =>
-    alert(`deleteProduct(${id})`)
+  const deleteProductHandler = async (id: string) => {
+    if (window.confirm('Are you sure you want to delete this product?')) {
+      try {
+        await deleteProduct(id)
+        toast.success('Product deleted successfully');
+        if (parseInt(page) > filter.pages)
+          navigate(`/admin/products?page=${filter.pages}`)
+      } catch (err) {
+        toast.error(getError(err as ApiError))
+      }
+    }
+  }
 
-  const PageLink = ({ type, page, text }: { type: string, page: string, text: JSX.Element | number }) => {
+  const PageLink = ({ type, page, text }: { type: string, page: string, text: string | number }): JSX.Element => {
     const pg = parseInt(page)
+    let pgNv, disabledLink = ''
 
-    let disabledLink = ''
     if (type === 'p' && pg === 1)
       disabledLink = ' disabled'
     if (type === 'n' && pg === filter.pages)
@@ -44,7 +67,6 @@ export default function ProductListPage() {
     if (type === 'l' && pg === filter.pages)
       disabledLink = ' disabled'
 
-    let pgNv
     if (type === 'f') pgNv = 1
     if (type === 'x') pgNv = text
     if (type === 'l') pgNv = filter.pages
@@ -54,7 +76,7 @@ export default function ProductListPage() {
     return (
       <li className={`page-item${disabledLink}`}>
         <Link className="page-link" to={`/admin/products?page=${pgNv}`} >
-          {text}
+          <span>{text}</span>
         </Link>
       </li>
     )
@@ -62,26 +84,7 @@ export default function ProductListPage() {
 
   return (
     <div>
-      <Helmet>
-        <title>
-          Products
-        </title>
-      </Helmet>
-      <Row>
-        <Col>
-          <h1>Products</h1>
-        </Col>
-        <Col className="col text-end">
-          <div>
-            <Button
-              type="button"
-              onClick={createProductHandler}
-            >
-              Create Product
-            </Button>
-          </div>
-        </Col>
-      </Row>
+      <Helmet><title>Products</title></Helmet>
       {isLoading ? (
         <Loading />
       ) : error ? (
@@ -90,6 +93,16 @@ export default function ProductListPage() {
         <Message variant="danger">No records found!</Message>
       ) : (
         <>
+          <Row>
+            <Col><h1>Products</h1></Col>
+            <Col className="col text-end">
+              <div>
+                <Button type="button" onClick={createProductHandler}>
+                  Create Product
+                </Button>
+              </div>
+            </Col>
+          </Row>
           <table className="table">
             <thead>
               <tr>
@@ -110,17 +123,10 @@ export default function ProductListPage() {
                   <td>{product.category}</td>
                   <td>{product.brand}</td>
                   <td>
-                    <Button
-                      type='button'
-                      variant='light'
-                      onClick={() => editProductHandler(product._id)}
-                    >
+                    <Button type='button' variant='light' onClick={() => editProductHandler(product._id)}>
                       Edit
                     </Button>{' '}
-                    <Button type='button'
-                      variant='light'
-                      onClick={() => deleteProductHandler(product._id)}
-                    >
+                    <Button type='button' variant='light' onClick={() => deleteProductHandler(product._id)}>
                       Delete
                     </Button>
                   </td>
@@ -130,18 +136,17 @@ export default function ProductListPage() {
           </table>
           <nav>
             <ul className="pagination">
-              <PageLink type="f" page={page} text={<span>«</span>} />
-              <PageLink type="p" page={page} text={<span>‹</span>} />
+              <PageLink type="f" page={page} text={`«`} />
+              <PageLink type="p" page={page} text={`‹`} />
               {[...Array(filter.pages).keys()].map((x) => (
                 <PageLink type="x" page={page} text={x + 1} key={x + 1} />
               ))}
-              <PageLink type="n" page={page} text={<span>›</span>} />
-              <PageLink type="l" page={page} text={<span>»</span>} />
+              <PageLink type="n" page={page} text={`›`} />
+              <PageLink type="l" page={page} text={`»`} />
             </ul>
           </nav>
         </>
-      )
-      }
+      )}
     </div >
   )
 }

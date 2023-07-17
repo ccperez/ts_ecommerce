@@ -24,7 +24,10 @@ export default function Input({ form, type, name, label, value, autoFocus, onCha
   const togglePassword = () =>
     setPasswordType(passwordType === 'password' ? 'text' : 'password')
 
-  const passwordTracker = fn.form.password.tracker(value)
+  const passwordTracker =
+    (name === 'password' || name === 'newPassword')
+      ? fn.form.password.tracker(value) : null
+
   const passwordStrength = fn.form.password.strength(passwordTracker)
 
   const passwordValidation = (field: string) =>
@@ -47,36 +50,58 @@ export default function Input({ form, type, name, label, value, autoFocus, onCha
     let errorMessage
     switch (type) {
       case 'text':
-        if (name === 'name' || name === 'fullName') {
-          const ptrn_Fullname = /^[a-zA-Z]{2,40}( [a-zA-Z]{2,40})+$/
-          errorMessage = !ptrn_Fullname.test(value)
-            ? 'Please enter your fullname [first and last name]!' : undefined
-        }
-        if (name === 'address') {
-          const ptrn_Address = /^(\d+) ?([A-Za-z](?= ))? (.*?) ([^ ]+?) ?((?<= )APT)? ?((?<= )\d*)?$/
-          errorMessage = !ptrn_Address.test(value)
-            ? 'Please enter valid address!' : undefined
-        }
-        if (name === 'city') {
-          const ptrn_City = /^[a-zA-Z ]{1,19}$/
-          errorMessage = !ptrn_City.test(value)
-            ? 'Please enter valid city!' : undefined
-        }
-        if (name === 'postalCode') {
-          const ptrn_PostalCode = /^\d{4}$/
-          errorMessage = !ptrn_PostalCode.test(value)
-            ? 'Please enter valid postalcode!' : undefined
-        }
-        if (name === 'country') {
-          const ptrn_Country = /^[a-zA-Z ]{1,19}$/
-          errorMessage = !ptrn_Country.test(value)
-            ? 'Please enter valid country!' : undefined
+        if (form !== 'editProduct') {
+          if (name === 'name' || name === 'fullName') {
+            const ptrn_Fullname = /^[a-zA-Z]{2,40}( [a-zA-Z]{2,40})+$/
+            errorMessage = !ptrn_Fullname.test(value)
+              ? 'Please enter your fullname [first and last name]!' : undefined
+          } else if (name === 'address') {
+            const ptrn_Address = /^(\d+) ?([A-Za-z](?= ))? (.*?) ([^ ]+?) ?((?<= )APT)? ?((?<= )\d*)?$/
+            errorMessage = !ptrn_Address.test(value)
+              ? 'Please enter valid address!' : undefined
+          } else if (name === 'city') {
+            const ptrn_City = /^[a-zA-Z ]{1,19}$/
+            errorMessage = !ptrn_City.test(value)
+              ? 'Please enter valid city!' : undefined
+          } else if (name === 'postalCode') {
+            const ptrn_PostalCode = /^\d{4}$/
+            errorMessage = !ptrn_PostalCode.test(value)
+              ? 'Please enter valid postalcode!' : undefined
+          } else if (name === 'country') {
+            const ptrn_Country = /^[a-zA-Z ]{1,19}$/
+            errorMessage = !ptrn_Country.test(value)
+              ? 'Please enter valid country!' : undefined
+          }
+        } else {
+          if (name === 'name' || name === 'category' || name === 'brand' || name === 'description') {
+            const ptrn_product = /^[\w ]*[^\W_][\w ]*$/
+            errorMessage = !ptrn_product.test(value)
+              ? `Please enter valid product ${name}!` : undefined
+          } else if (name === 'slug') {
+            const ptrn_slug = /^[A-Za-z0-9\-\_]+$/
+            errorMessage = !ptrn_slug.test(value)
+              ? 'Please enter valid product slug!' : undefined
+          } else if (name === 'image') {
+            const ptrn_filename = /[^\s]+(.*?).(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$/
+            errorMessage = !ptrn_filename.test(value)
+              ? 'Please enter valid image filename with (jpg|jpeg|png|gif) extension!' : undefined
+          }
         }
         break
       case 'number':
-        const ptrn_OTP = /^\d{6}$/
-        errorMessage = name === 'otp' && !ptrn_OTP.test(value)
-          ? 'Please provide right OTP pattern!' : undefined
+        if (name === 'otp') {
+          const ptrn_OTP = /^\d{6}$/
+          errorMessage = name === 'otp' && !ptrn_OTP.test(value)
+            ? 'Please provide right OTP pattern!' : undefined
+        } else if (name === 'price') {
+          const ptrn_price = /^[0-9]*(\.[0-9]{0,2})?$/
+          errorMessage = !ptrn_price.test(value)
+            ? 'Please provide proper price' : undefined
+        } else if (name === 'countInStock') {
+          const ptrn_stock = /^\d+$/
+          errorMessage = !ptrn_stock.test(value)
+            ? 'Please provide proper stock count!' : undefined
+        }
         break
       case 'email':
         const ptrn_Email = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
@@ -84,14 +109,12 @@ export default function Input({ form, type, name, label, value, autoFocus, onCha
           ? 'Please enter valid email address!' : undefined
         break
       case 'password':
-        switch (true) {
-          case name === 'password' || name === 'newPassword':
-            errorMessage = (fn.form.password.strengthMeter(passwordStrength)) < 100
-              ? 'Please enter valid Password!' : undefined
-            break
-          case name === 'confirmPassword':
-            errorMessage = passwordValue !== value
-              ? 'Please enter value that match to the password!' : undefined
+        if (name === 'password' || name === 'newPassword') {
+          errorMessage = (fn.form.password.strengthMeter(passwordStrength)) < 100
+            ? 'Please enter valid Password!' : undefined
+        } else if (name === 'confirmPassword') {
+          errorMessage = passwordValue !== value
+            ? 'Please enter value that match to the password!' : undefined
         }
     }
 
@@ -142,7 +165,7 @@ export default function Input({ form, type, name, label, value, autoFocus, onCha
       default:
         return (
           <Form.Control
-            required
+            required={type !== 'file' ? true : false}
             autoFocus={autoFocus}
             type={type}
             value={value}

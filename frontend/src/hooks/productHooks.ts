@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation } from '@tanstack/react-query'
 import apiClient from '../apiClient'
 import { Product } from '../types/Product'
 
@@ -52,4 +52,39 @@ export const useGetProductDetailsBySlugQuery = (slug: string) =>
     queryKey: ['products', slug],
     queryFn: async () =>
       (await apiClient.get<Product>(`api/products/slug/${slug}`)).data,
+  })
+
+export const useGetProductDetailsByIDQuery = (id: string) =>
+  useQuery({
+    queryKey: ['product', id],
+    queryFn: async () =>
+      (await apiClient.get<Product>(`api/products/${id}`)).data,
+  })
+
+export const useCreateProductMutation = () =>
+  useMutation({
+    mutationFn: async () =>
+      (await apiClient.post<Product>(`/api/products`, {})).data,
+  })
+
+export const useDeleteProductMutation = () =>
+  useMutation({
+    mutationFn: async (id: string) =>
+      (await apiClient.delete(`/api/products/${id}`)).data,
+  })
+
+export const useUpdateProductMutation = () =>
+  useMutation({
+    mutationFn: async (product: Product) =>
+      (await apiClient.put<Product>(`/api/products/${product._id}`, product))
+        .data,
+  })
+
+export const useUploadProductImageMutation = () =>
+  useMutation({
+    mutationFn: async (formData) => {
+      await apiClient.post(`/api/upload`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+    },
   })

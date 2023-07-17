@@ -92,6 +92,62 @@ const userInputAttributes = {
       autofocus: false,
     },
   ],
+  productUpdate: [
+    {
+      type: 'text',
+      name: 'name',
+      label: 'Name',
+      autofocus: true,
+    },
+    {
+      type: 'text',
+      name: 'slug',
+      label: 'Slug',
+      autofocus: false,
+    },
+    {
+      type: 'number',
+      name: 'price',
+      label: 'Price',
+      autofocus: false,
+    },
+    {
+      type: 'text',
+      name: 'category',
+      label: 'Category',
+      autofocus: false,
+    },
+    {
+      type: 'text',
+      name: 'brand',
+      label: 'Brand',
+      autofocus: false,
+    },
+    {
+      type: 'number',
+      name: 'countInStock',
+      label: 'Count In Stock',
+      autofocus: false,
+    },
+    {
+      type: 'text',
+      name: 'description',
+      label: 'Description',
+      autofocus: false,
+    },
+    {
+      type: 'text',
+      name: 'image',
+      label: 'Image',
+      autofocus: false,
+    },
+    {
+      type: 'file',
+      name: 'imageFile',
+      label: 'Image File',
+      autofocus: false,
+    },
+  ],
 }
 
 export default userInputAttributes

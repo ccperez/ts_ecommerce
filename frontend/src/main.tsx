@@ -34,6 +34,7 @@ import OrderHistoryPage from './pages/OrderHistoryPage'
 
 import DashboardPage from './pages/admin/DashboardPage'
 import ProductListPage from './pages/admin/ProductListPage'
+import ProductEditPage from './pages/admin/ProductEditPage'
 
 import ErrorBoundary from './components/ErrorBoundary.tsx'
 
@@ -67,6 +68,7 @@ const router = createBrowserRouter(
       <Route path="" element={<AdminRoute />}>
         <Route path="admin/dashboard" element={<DashboardPage />} />
         <Route path="admin/products" element={<ProductListPage />} />
+        <Route path="admin/product/:id" element={<ProductEditPage />} />
       </Route>
     </Route>
   )
