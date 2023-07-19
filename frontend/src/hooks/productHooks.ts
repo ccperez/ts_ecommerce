@@ -82,9 +82,8 @@ export const useUpdateProductMutation = () =>
 
 export const useUploadProductImageMutation = () =>
   useMutation({
-    mutationFn: async (formData) => {
+    mutationFn: async (formData: any) => 
       await apiClient.post(`/api/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
-    },
   })

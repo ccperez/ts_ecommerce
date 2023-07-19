@@ -14,6 +14,7 @@ import { getError } from '../utils'
 import { useGetProductDetailsBySlugQuery } from '../hooks/productHooks'
 import { addToCart } from '../stateMgmt/actions/cartActions'
 import fn from '../functions/cart'
+import cFn from '../functions/common'
 
 let crtItmQtyEQStck = false
 
@@ -42,7 +43,7 @@ export default function ProductPage() {
     <div>
       <Row>
         <Col md={6}>
-          <img className="large" src={product.image} alt={product.name}></img>
+          <img className="large" src={cFn.baseURL + product.image} alt={product.name}></img>
         </Col>
         <Col md={3}>
           <ListGroup variant="flush">

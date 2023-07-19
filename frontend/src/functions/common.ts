@@ -22,4 +22,5 @@ export default {
   },
   emailProtect: (email: string) =>
     email.replace(/(\w{2})[\w.-]+@([\w.]+\w)/, '$1****@$2'),
+  baseURL: import.meta.env.DEV ? 'http://localhost:5000/' : '/',
 }

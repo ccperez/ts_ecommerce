@@ -1,7 +1,8 @@
 import axios from 'axios'
+import fn from './functions/common'
 
 const apiClient = axios.create({
-  baseURL: import.meta.env.DEV ? 'http://localhost:5000/' : '/',
+  baseURL: fn.baseURL,
   headers: { 'Content-type': 'application/json' },
 })
 

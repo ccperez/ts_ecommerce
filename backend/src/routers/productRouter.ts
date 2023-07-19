@@ -144,7 +144,7 @@ productRouter.post(
     const newProduct = new ProductModel({
       name: 'sample name ' + Date.now(),
       slug: 'sample-name-' + Date.now(),
-      image: '/images/p1.jpg',
+      image: 'images/sample.jpg',
       price: 0,
       category: 'sample category',
       brand: 'sample brand',

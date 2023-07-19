@@ -10,6 +10,7 @@ import { seedRouter } from './routers/seedRouter'
 import { userRouter } from './routers/userRouter'
 import { orderRouter } from './routers/orderRouter'
 import { keyRouter } from './routers/keyRouter'
+import uploadRoutes from './routers/uploadRoutes'
 
 dotenv.config()
 
@@ -40,6 +41,9 @@ app.use('/api/users', userRouter)
 app.use('/api/orders', orderRouter)
 app.use('/api/seed', seedRouter)
 app.use('/api/keys', keyRouter)
+app.use('/api/upload', uploadRoutes)
+
+app.use('/images', express.static(path.join(__dirname, '../images')))
 
 app.use(express.static(path.join(__dirname, '../dist')))
 app.get('*', (req: Request, res: Response) =>

@@ -82,7 +82,7 @@ export default function Input({ form, type, name, label, value, autoFocus, onCha
             errorMessage = !ptrn_slug.test(value)
               ? 'Please enter valid product slug!' : undefined
           } else if (name === 'image') {
-            const ptrn_filename = /[^\s]+(.*?).(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$/
+            const ptrn_filename = /[^\s]+(.*?).(jpg|jpeg|png|gif)$/
             errorMessage = !ptrn_filename.test(value)
               ? 'Please enter valid image filename with (jpg|jpeg|png|gif) extension!' : undefined
           }
@@ -165,12 +165,15 @@ export default function Input({ form, type, name, label, value, autoFocus, onCha
       default:
         return (
           <Form.Control
-            required={type !== 'file' ? true : false}
+            required={!(type === 'file')}
+            disabled={(name === 'image')}
+            multiple={(type === 'file')}
             autoFocus={autoFocus}
             type={type}
             value={value}
             onChange={onChange}
-            onFocus={() => setShowError(true)}
+            onFocus={() => setShowError(true)
+            }
             onBlur={onBlur}
           />
         )

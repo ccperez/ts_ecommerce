@@ -15,7 +15,8 @@ import fn from '../../functions/common'
 
 import {
   useGetProductDetailsByIDQuery,
-  useUpdateProductMutation
+  useUpdateProductMutation,
+  useUploadProductImageMutation
 } from '../../hooks/productHooks'
 import { Product } from '../../types/Product'
 
@@ -39,6 +40,7 @@ export default function ProductEditPage() {
 
   const { data: product, isLoading, error } = useGetProductDetailsByIDQuery(idProduct!)
   const { mutateAsync: updateProduct } = useUpdateProductMutation()
+  const { mutateAsync: uploadProductImage } = useUploadProductImageMutation()
 
   useEffect(() => {
     if (product) {
@@ -75,7 +77,18 @@ export default function ProductEditPage() {
     }
   }
 
-  const uploadFileHandler = async (e: any) => { }
+  const uploadFileHandler = async (e: any) => {
+    const file = e.target.files[0]
+    const formData = new FormData()
+    formData.append('file', file)
+    try {
+      const { data } = await uploadProductImage(formData)
+      setImage(data.replace('/image', 'image'))
+      toast.success('Image uploaded successfully');
+    } catch (err) {
+      toast.error(getError(err as ApiError))
+    }
+  }
 
   const changeHandler = (e: React.ChangeEvent<HTMLInputElement>, name: string) => {
     setIsValid(false)
@@ -147,3 +160,4 @@ export default function ProductEditPage() {
     />
   )
 }
+
