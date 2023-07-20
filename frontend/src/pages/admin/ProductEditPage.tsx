@@ -83,7 +83,8 @@ export default function ProductEditPage() {
     formData.append('file', file)
     try {
       const { data } = await uploadProductImage(formData)
-      setImage(data.replace('/image', 'image'))
+      // setImage(data.replace('/image', 'image'))
+      setImage(data.secure_url)
       toast.success('Image uploaded successfully');
     } catch (err) {
       toast.error(getError(err as ApiError))

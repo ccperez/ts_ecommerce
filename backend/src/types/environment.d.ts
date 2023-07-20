@@ -11,6 +11,9 @@ declare global {
       EMAIL_PORT: string
       EMAIL_USER: string
       EMAIL_PASSWORD: string
+      CLOUDINARY_CLOUD_NAME: string
+      CLOUDINARY_API_KEY: string
+      CLOUDINARY_API_SECRET: string
       NODE_ENV: 'test' | 'dev' | 'prod'
     }
   }

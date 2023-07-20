@@ -43,8 +43,6 @@ app.use('/api/seed', seedRouter)
 app.use('/api/keys', keyRouter)
 app.use('/api/upload', uploadRoutes)
 
-app.use('/images', express.static(path.join(__dirname, '../images')))
-
 app.use(express.static(path.join(__dirname, '../dist')))
 app.get('*', (req: Request, res: Response) =>
   res.sendFile(path.join(__dirname, '../dist/index.html'))

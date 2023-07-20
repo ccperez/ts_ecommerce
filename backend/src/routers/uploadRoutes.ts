@@ -1,42 +1,35 @@
-import path from 'path'
 import express from 'express'
 import multer from 'multer'
+import { v2 as cloudinary } from 'cloudinary'
+import streamifier from 'streamifier'
+import { isAuth, isAdmin } from '../utils'
 
-const router = express.Router()
+const upload = multer()
 
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, 'images/')
-  },
-  filename(req, file, cb) {
-    cb(
-      null,
-      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
-    )
-  },
-})
+const uploadRouter = express.Router()
 
-function checkFileType(file: any, cb: any) {
-  const filetypes = /jpg|jpeg|png/
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase())
-  const mimetype = filetypes.test(file.mimetype)
-
-  if (extname && mimetype) {
-    return cb(null, true)
-  } else {
-    cb('Images only!')
+uploadRouter.post(
+  '/',
+  isAuth,
+  isAdmin,
+  upload.single('file'),
+  async (req, res) => {
+    cloudinary.config({
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    })
+    const streamUpload = (req: any) => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream((error, result) => {
+          result ? resolve(result) : reject(error)
+        })
+        streamifier.createReadStream(req.file.buffer).pipe(stream)
+      })
+    }
+    const result = await streamUpload(req)
+    res.send(result)
   }
-}
+)
 
-const upload = multer({
-  storage,
-  fileFilter: function (req, file, cb) {
-    checkFileType(file, cb)
-  },
-})
-
-router.post('/', upload.single('file'), (req, res) => {
-  res.send(`/${req.file?.path}`)
-})
-
-export default router
+export default uploadRouter
