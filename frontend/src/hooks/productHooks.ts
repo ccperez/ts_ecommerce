@@ -76,14 +76,13 @@ export const useDeleteProductMutation = () =>
 export const useUpdateProductMutation = () =>
   useMutation({
     mutationFn: async (product: Product) =>
-      (await apiClient.put<Product>(`/api/products/${product._id}`, product))
-        .data,
+      (await apiClient.put(`/api/products/${product._id}`, product)).data,
   })
 
 export const useUploadProductImageMutation = () =>
   useMutation({
-    mutationFn: async (formData: any) => 
+    mutationFn: async (formData: any) =>
       await apiClient.post(`/api/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
-      })
+      }),
   })

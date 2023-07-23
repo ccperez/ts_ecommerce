@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { Button } from 'react-bootstrap'
 import { toast } from 'react-toastify'
+import imageCompression from 'browser-image-compression';
 
 import Message from '../../components/Message'
 import Loading from '../../components/Loading'
@@ -35,6 +36,7 @@ export default function ProductEditPage() {
   const [countInStock, setCountInStock] = useState(0)
   const [description, setDescription] = useState('')
   const [image, setImage] = useState('')
+  const [images, setImages] = useState<any>([])
 
   const [isValid, setIsValid] = useState(false)
 
@@ -52,13 +54,15 @@ export default function ProductEditPage() {
       setCountInStock(product.countInStock)
       setDescription(product.description)
       setImage(product.image)
+      if (product.images)
+        setImages(product.images.split(','))
     }
   }, [product])
 
   const submitHandler = async (e: React.SyntheticEvent) => {
     e.preventDefault()
     try {
-      const updatedProduct = {
+      await updateProduct({
         _id: idProduct,
         name,
         slug,
@@ -67,25 +71,42 @@ export default function ProductEditPage() {
         brand,
         countInStock,
         description,
-        image
-      } as Product
-
-      await updateProduct(updatedProduct)
+        image,
+        images: images.join(',')
+      } as Product)
       toast.success('Product updated successfully')
     } catch (err) {
       toast.error(getError(err as ApiError))
     }
   }
 
-  const uploadFileHandler = async (e: any) => {
-    const file = e.target.files[0]
-    const formData = new FormData()
-    formData.append('file', file)
+  const deleteFileHandler = async (filename: string) => {
+    images.length > 1
+      ? setImages(images.filter((x: string) => x !== filename))
+      : toast.error("Image can't remove, it should have atleast one!")
+  }
+
+  const uploadFileHandler = async (e: any, name: string) => {
     try {
-      const { data } = await uploadProductImage(formData)
-      // setImage(data.replace('/image', 'image'))
-      setImage(data.secure_url)
-      toast.success('Image uploaded successfully');
+      let file = e.target.files[0]
+      if (file) {
+        const imageMimeType = /image\/(png|jpg|jpeg)/i
+        if (file.type.match(imageMimeType)) {
+          console.log(file.size)
+          if (file.size > 1024) {
+            file = await imageCompression(file, { maxSizeMB: 1, maxWidthOrHeight: 1920, useWebWorker: true, })
+            console.log(file.size)
+          }
+          const formData = new FormData()
+          formData.append('file', file)
+          const { data } = await uploadProductImage(formData)
+          name === 'imageFile'
+            ? setImage(data.secure_url.replace(fn.imageBaseURL, ''))
+            : setImages([...images, data.secure_url.replace(fn.imageBaseURL, '')])
+        } else {
+          toast.error('Image file only allow with (jpg|jpeg|png) extension!')
+        }
+      }
     } catch (err) {
       toast.error(getError(err as ApiError))
     }
@@ -112,8 +133,6 @@ export default function ProductEditPage() {
         return setDescription(e.target.value)
       case 'image':
         return setImage(e.target.value)
-      default:
-        return uploadFileHandler(e)
     }
   }
 
@@ -121,17 +140,41 @@ export default function ProductEditPage() {
 
   const fieldValue = [name, slug, price, category, brand, countInStock, description, image]
   const userInputs = inputs.productUpdate.map((input: InputAttr, idx: number) => (
-    <FormInput
-      form='editProduct'
-      key={input.name}
-      type={input.type}
-      name={input.name}
-      label={input.label}
-      value={fieldValue[idx]}
-      autoFocus={input.autofocus}
-      onChange={e => changeHandler(e, input.name)}
-      onBlur={blurHandler}
-    />
+    <span key={input.name}>
+      <FormInput
+        form='editProduct'
+        type={input.type}
+        name={input.name}
+        label={input.label}
+        value={fieldValue[idx]}
+        autoFocus={input.autofocus}
+        onChange={e =>
+          input.type !== 'file'
+            ? changeHandler(e, input.name)
+            : uploadFileHandler(e, input.name)
+        }
+        onBlur={blurHandler}
+      />
+      {input.name === 'additionalImage' && (
+        <table className="table">
+          <tbody>
+            {images.map((img: any) => (
+              <tr key={img} id={img}>
+                <td>
+                  <img src={fn.imageURL(img)} alt={img} width={50} height={50} />
+                </td>
+                <td>{img}</td>
+                <td>
+                  <Button variant="light" onClick={() => deleteFileHandler(img)}>
+                    <i className="fa fa-times-circle" />
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </span>
   ))
 
   const formButton =

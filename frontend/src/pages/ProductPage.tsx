@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { Row, Col, Card, ListGroup, Badge, Button } from 'react-bootstrap'
@@ -14,12 +14,16 @@ import { getError } from '../utils'
 import { useGetProductDetailsBySlugQuery } from '../hooks/productHooks'
 import { addToCart } from '../stateMgmt/actions/cartActions'
 import fn from '../functions/cart'
+import cFn from '../functions/common'
 
 let crtItmQtyEQStck = false
+let arImages: any[] = []
 
 export default function ProductPage() {
   const navigate = useNavigate()
   const { slug } = useParams()
+
+  const [selectedImage, setSelectedImage] = useState('')
 
   const { state: { cart: { cartItems }, }, dispatch, } = useContext(Store)
 
@@ -30,7 +34,11 @@ export default function ProductPage() {
     navigate('/')
   }
 
-  if (product!) crtItmQtyEQStck = fn.cart.itemQtyEQStock(cartItems, product._id, product.countInStock)
+  if (product!) {
+    crtItmQtyEQStck = fn.cart.itemQtyEQStock(cartItems, product._id, product.countInStock)
+    const images = product.images ? product.image + "," + product.images : product.image
+    arImages = images.split(',')
+  }
 
   return isLoading ? (
     <Loading />
@@ -42,7 +50,7 @@ export default function ProductPage() {
     <div>
       <Row>
         <Col md={6}>
-          <img className="large" src={product.image} alt={product.name}></img>
+          <img className="large" src={cFn.imageURL(selectedImage || product.image)} alt={product.name}></img>
         </Col>
         <Col md={3}>
           <ListGroup variant="flush">
@@ -73,6 +81,24 @@ export default function ProductPage() {
                   <Row>
                     <Col>Price:</Col>
                     <Col>${product.price}</Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row xs={1} md={2} className="g-2">
+                    {arImages.map((x) => (
+                      <Col key={x}>
+                        <Card>
+                          <Button
+                            className="thumbnail"
+                            type="button"
+                            variant="light"
+                            onClick={() => setSelectedImage(x)}
+                          >
+                            <Card.Img variant="top" src={cFn.imageURL(x)} alt="product" />
+                          </Button>
+                        </Card>
+                      </Col>
+                    ))}
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>

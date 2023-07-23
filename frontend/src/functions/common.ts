@@ -23,4 +23,9 @@ export default {
   emailProtect: (email: string) =>
     email.replace(/(\w{2})[\w.-]+@([\w.]+\w)/, '$1****@$2'),
   baseURL: import.meta.env.DEV ? 'http://localhost:5000/' : '/',
+  imageBaseURL: 'https://res.cloudinary.com/dpgoghm0x/image/upload/',
+  imageURL: (image: string) =>
+    !image.includes('images')
+      ? 'https://res.cloudinary.com/dpgoghm0x/image/upload/' + image
+      : '/' + image,
 }

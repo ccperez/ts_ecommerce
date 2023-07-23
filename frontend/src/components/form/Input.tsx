@@ -82,9 +82,9 @@ export default function Input({ form, type, name, label, value, autoFocus, onCha
             errorMessage = !ptrn_slug.test(value)
               ? 'Please enter valid product slug!' : undefined
           } else if (name === 'image') {
-            const ptrn_filename = /[^\s]+(.*?).(jpg|jpeg|png|gif)$/
+            const ptrn_filename = /[^\s]+(.*?).(jpg|jpeg|png)$/
             errorMessage = !ptrn_filename.test(value)
-              ? 'Please enter valid image filename with (jpg|jpeg|png|gif) extension!' : undefined
+              ? 'Please enter valid image filename with (jpg|jpeg|png) extension!' : undefined
           }
         }
         break
@@ -168,6 +168,7 @@ export default function Input({ form, type, name, label, value, autoFocus, onCha
             required={!(type === 'file')}
             disabled={(name === 'image')}
             multiple={(type === 'file')}
+            accept={type === 'file' ? "image/*" : undefined}
             autoFocus={autoFocus}
             type={type}
             value={value}

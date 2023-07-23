@@ -14,6 +14,9 @@ export class Product {
   public image!: string
 
   @prop({ required: true })
+  public images!: string
+
+  @prop({ required: true })
   public brand!: string
 
   @prop({ required: true })

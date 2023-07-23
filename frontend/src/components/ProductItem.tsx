@@ -6,6 +6,7 @@ import { Store } from '../Store'
 import { Product } from '../types/Product'
 import { addToCart } from '../stateMgmt/actions/cartActions'
 import fn from '../functions/cart'
+import cFn from '../functions/common'
 
 interface ProductProps { product: Product }
 
@@ -19,7 +20,7 @@ export default function ProductItem({ product }: ProductProps) {
   return (
     <Card>
       <Link to={`/product/${product.slug}`}>
-        <img src={product.image} className="card-img-top" alt={product.name} />
+        <img src={cFn.imageURL(product.image)} className="card-img-top" alt={product.name} />
       </Link>
       <Card.Body>
         <Link to={`/product/${product.slug}`}>

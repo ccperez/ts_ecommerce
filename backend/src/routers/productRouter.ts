@@ -145,6 +145,7 @@ productRouter.post(
       name: 'sample name ' + Date.now(),
       slug: 'sample-name-' + Date.now(),
       image: 'images/sample.jpg',
+      images: 'images/sample.jpg',
       price: 0,
       category: 'sample category',
       brand: 'sample brand',
@@ -173,8 +174,9 @@ productRouter.put(
       product.brand = req.body.brand
       product.countInStock = req.body.countInStock
       product.description = req.body.description
+      product.images = req.body.images
       await product.save()
-      res.json({ message: 'Product Updated' })
+      res.json({ message: 'Product Updated', product })
     } else {
       res.status(404).json({ message: 'Product Not Found' })
     }

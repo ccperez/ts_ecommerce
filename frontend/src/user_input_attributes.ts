@@ -144,7 +144,13 @@ const userInputAttributes = {
     {
       type: 'file',
       name: 'imageFile',
-      label: 'Image File',
+      label: 'Upload Image',
+      autofocus: false,
+    },
+    {
+      type: 'file',
+      name: 'additionalImage',
+      label: 'Additional Image',
       autofocus: false,
     },
   ],

@@ -172,3 +172,7 @@ button.side-navbar-user:hover {
 li > a {
   text-decoration: none;
 }
+
+button.thumbnail {
+  padding: 0;
+}
