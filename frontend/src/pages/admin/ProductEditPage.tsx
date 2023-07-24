@@ -17,7 +17,8 @@ import fn from '../../functions/common'
 import {
   useGetProductDetailsByIDQuery,
   useUpdateProductMutation,
-  useUploadProductImageMutation
+  useUploadProductImageMutation,
+  useDeleteProductImageMutation
 } from '../../hooks/productHooks'
 import { Product } from '../../types/Product'
 
@@ -42,7 +43,8 @@ export default function ProductEditPage() {
 
   const { data: product, isLoading, error } = useGetProductDetailsByIDQuery(idProduct!)
   const { mutateAsync: updateProduct } = useUpdateProductMutation()
-  const { mutateAsync: uploadProductImage } = useUploadProductImageMutation()
+  const { mutateAsync: uploadProductImage, isLoading: loadingUploadImage } = useUploadProductImageMutation()
+  const { mutateAsync: deleteProductImage, isLoading: loadingDeleteImage } = useDeleteProductImageMutation()
 
   useEffect(() => {
     if (product) {
@@ -81,9 +83,13 @@ export default function ProductEditPage() {
   }
 
   const deleteFileHandler = async (filename: string) => {
-    images.length > 1
-      ? setImages(images.filter((x: string) => x !== filename))
-      : toast.error("Image can't remove, it should have atleast one!")
+    if (images.length > 1) {
+      const idImg = filename.split('/')[1].split('.')[0]
+      await deleteProductImage(idImg)
+      setImages(images.filter((x: string) => x !== filename))
+    } else {
+      toast.error("Image can't remove, it should have atleast one image!")
+    }
   }
 
   const uploadFileHandler = async (e: any, name: string) => {
@@ -92,10 +98,11 @@ export default function ProductEditPage() {
       if (file) {
         const imageMimeType = /image\/(png|jpg|jpeg)/i
         if (file.type.match(imageMimeType)) {
-          console.log(file.size)
           if (file.size > 1024) {
-            file = await imageCompression(file, { maxSizeMB: 1, maxWidthOrHeight: 1920, useWebWorker: true, })
-            console.log(file.size)
+            file = await imageCompression(
+              file,
+              { maxSizeMB: 1, maxWidthOrHeight: 1920, useWebWorker: true, }
+            )
           }
           const formData = new FormData()
           formData.append('file', file)
@@ -156,23 +163,26 @@ export default function ProductEditPage() {
         onBlur={blurHandler}
       />
       {input.name === 'additionalImage' && (
-        <table className="table">
-          <tbody>
-            {images.map((img: any) => (
-              <tr key={img} id={img}>
-                <td>
-                  <img src={fn.imageURL(img)} alt={img} width={50} height={50} />
-                </td>
-                <td>{img}</td>
-                <td>
-                  <Button variant="light" onClick={() => deleteFileHandler(img)}>
-                    <i className="fa fa-times-circle" />
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <>
+          <div>{(loadingUploadImage || loadingDeleteImage) && <Loading />}</div>
+          <table className="table">
+            <tbody>
+              {images.map((img: any) => (
+                <tr key={img} id={img}>
+                  <td>
+                    <img src={fn.imageURL(img)} alt={img} width={50} height={50} />
+                  </td>
+                  <td>{img}</td>
+                  <td>
+                    <Button variant="light" onClick={() => deleteFileHandler(img)}>
+                      <i className="fa fa-times-circle" />
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
       )}
     </span>
   ))

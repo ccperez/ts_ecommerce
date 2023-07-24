@@ -86,3 +86,9 @@ export const useUploadProductImageMutation = () =>
         headers: { 'Content-Type': 'multipart/form-data' },
       }),
   })
+
+export const useDeleteProductImageMutation = () =>
+  useMutation({
+    mutationFn: async (id: string) =>
+      (await apiClient.delete(`/api/upload/image/${id}`)).data,
+  })

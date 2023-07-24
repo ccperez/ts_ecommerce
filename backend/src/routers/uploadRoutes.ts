@@ -1,6 +1,6 @@
-import express from 'express'
-import multer from 'multer'
+import express, { Request, Response } from 'express'
 import { v2 as cloudinary } from 'cloudinary'
+import multer from 'multer'
 import streamifier from 'streamifier'
 import { isAuth, isAdmin } from '../utils'
 
@@ -29,6 +29,23 @@ uploadRouter.post(
     }
     const result = await streamUpload(req)
     res.send(result)
+  }
+)
+
+uploadRouter.delete(
+  '/image/:id',
+  isAuth,
+  isAdmin,
+  async (req: Request, res: Response) => {
+    cloudinary.config({
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    })
+    const productImages = await cloudinary.uploader.destroy(req.params.id);
+    productImages
+      ? res.json({ message: 'Product Image Deleted' })
+      : res.status(404).json({ message: 'Product Image Not Found' })
   }
 )
 

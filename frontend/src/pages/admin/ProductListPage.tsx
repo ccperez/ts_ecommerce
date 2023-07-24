@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { toast } from 'react-toastify'
 import { Button, Col, Row } from 'react-bootstrap'
@@ -5,6 +6,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 
 import Loading from '../../components/Loading'
 import Message from '../../components/Message'
+import PromptConfirmation from '../../components/PromptConfirmation'
+
 
 import { Product } from '../../types/Product'
 import { getError } from '../../utils'
@@ -22,6 +25,11 @@ export default function ProductListPage() {
   const sp = new URLSearchParams(search)
   const page = sp.get('page') || '1'
 
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false)
+  const [modalTitle, setModalTitle] = useState('')
+  const [modalMessage, setModalMessage] = useState('')
+  const [deleteItem, setDeleteItem] = useState('')
+
   const { data, isLoading, error } = useGetAdminProductsQuery({ page })
   const { mutateAsync: createProduct } = useCreateProductMutation()
   const { mutateAsync: deleteProduct } = useDeleteProductMutation()
@@ -29,27 +37,28 @@ export default function ProductListPage() {
   const filter: any = data || []
 
   const createProductHandler = async () => {
-    if (window.confirm('Are you sure you want to create product?')) {
-      const product = await createProduct()
-      toast.success('product created successfully')
-      navigate(`/admin/product/${product._id}?page=${page}`)
-    }
+    const product = await createProduct()
+    navigate(`/admin/product/${product._id}?page=${page}`)
+    toast.success('product created successfully')
   }
 
   const editProductHandler = (id: string) =>
     navigate(`/admin/product/${id}?page=${page}`)
 
   const deleteProductHandler = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this product?')) {
-      try {
-        await deleteProduct(id)
-        toast.success('Product deleted successfully');
-        if (parseInt(page) > filter.pages)
-          navigate(`/admin/products?page=${filter.pages}`)
-      } catch (err) {
-        toast.error(getError(err as ApiError))
+    try {
+      await deleteProduct(id)
+      if (parseInt(page) > filter.pages) {
+        navigate(`/admin/products?page=${filter.pages}`)
+      } else {
+        navigate(`/admin/products?page=${parseInt(page) + 1}`)
+        setTimeout(() => navigate(`/admin/products?page=${page}`), 100);
       }
+      toast.success('Product deleted successfully');
+    } catch (err) {
+      toast.error(getError(err as ApiError))
     }
+    setShowConfirmationModal(false);
   }
 
   const PageLink = ({ type, page, text }: { type: string, page: string, text: string | number }): JSX.Element => {
@@ -82,6 +91,19 @@ export default function ProductListPage() {
     )
   }
 
+  const showModal = (title: string, id?: string, name?: string) => {
+    if (title === 'Delete') {
+      setDeleteItem(id!)
+      setModalMessage(`${title} ${name} product?`)
+    } else {
+      setModalMessage(`Are you sure you want to create product?`)
+    }
+    setModalTitle(title)
+    setShowConfirmationModal(true);
+  }
+
+  const hideConfirmationModal = () => setShowConfirmationModal(false)
+
   return (
     <div>
       <Helmet><title>Products</title></Helmet>
@@ -97,7 +119,7 @@ export default function ProductListPage() {
             <Col><h1>Products</h1></Col>
             <Col className="col text-end">
               <div>
-                <Button type="button" onClick={createProductHandler}>
+                <Button type="button" onClick={() => showModal('Create')}>
                   Create Product
                 </Button>
               </div>
@@ -126,7 +148,7 @@ export default function ProductListPage() {
                     <Button type='button' variant='light' onClick={() => editProductHandler(product._id)}>
                       Edit
                     </Button>{' '}
-                    <Button type='button' variant='light' onClick={() => deleteProductHandler(product._id)}>
+                    <Button type='button' variant='light' onClick={() => showModal('Delete', product._id, product.name)}>
                       Delete
                     </Button>
                   </td>
@@ -145,6 +167,15 @@ export default function ProductListPage() {
               <PageLink type="l" page={page} text={`»`} />
             </ul>
           </nav>
+          <PromptConfirmation
+            showModal={showConfirmationModal}
+            confirmModal={modalTitle === 'Delete' ? deleteProductHandler : createProductHandler}
+            hideModal={hideConfirmationModal}
+            deleteItem={deleteItem}
+            title={modalTitle}
+            message={modalMessage}
+          />
+
         </>
       )}
     </div >
