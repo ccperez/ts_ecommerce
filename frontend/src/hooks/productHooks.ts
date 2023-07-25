@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import apiClient from '../apiClient'
-import { Product } from '../types/Product'
+import { Product, iProductImage } from '../types/Product'
 
 export const useGetProductsQuery = () =>
   useQuery({
@@ -89,6 +89,11 @@ export const useUploadProductImageMutation = () =>
 
 export const useDeleteProductImageMutation = () =>
   useMutation({
-    mutationFn: async (id: string) =>
-      (await apiClient.delete(`/api/upload/image/${id}`)).data,
+    mutationFn: async (image: iProductImage) =>
+      (
+        await apiClient.put<{ message: string; product: {} }>(
+          `/api/upload/image/${image.id}`,
+          image
+        )
+      ).data,
   })

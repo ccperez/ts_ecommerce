@@ -8,6 +8,7 @@ import Message from '../../components/Message'
 import Loading from '../../components/Loading'
 import FormEntry from '../../components/form/Entry'
 import FormInput from '../../components/form/Input'
+import PromptConfirmation from '../../components/PromptConfirmation'
 
 import { ApiError } from '../../types/ApiError'
 import { getError } from '../../utils'
@@ -20,7 +21,7 @@ import {
   useUploadProductImageMutation,
   useDeleteProductImageMutation
 } from '../../hooks/productHooks'
-import { Product } from '../../types/Product'
+import { Product, iProductImage } from '../../types/Product'
 
 export default function ProductEditPage() {
   const navigate = useNavigate()
@@ -41,6 +42,11 @@ export default function ProductEditPage() {
 
   const [isValid, setIsValid] = useState(false)
 
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false)
+  const [modalTitle, setModalTitle] = useState('')
+  const [modalMessage, setModalMessage] = useState('')
+  const [deleteItem, setDeleteItem] = useState('')
+
   const { data: product, isLoading, error } = useGetProductDetailsByIDQuery(idProduct!)
   const { mutateAsync: updateProduct } = useUpdateProductMutation()
   const { mutateAsync: uploadProductImage, isLoading: loadingUploadImage } = useUploadProductImageMutation()
@@ -60,6 +66,35 @@ export default function ProductEditPage() {
         setImages(product.images.split(','))
     }
   }, [product])
+
+  const showModal = (title: string, id?: string, name?: string) => {
+    if (images.length > 1) {
+      setDeleteItem(id!)
+      setModalMessage(`This permanently remove from your cloudinary storage. Continue delete ${name}? `)
+      setModalTitle(title)
+      setShowConfirmationModal(true);
+    } else {
+      toast.error("Image can't remove, it should have atleast one image!")
+    }
+  }
+
+  const hideConfirmationModal = () => setShowConfirmationModal(false)
+
+  const backHandler = async () => {
+    images
+      .filter((x: any) => x !== 'images/sample.jpg')
+      .map(async (filename: any) => {
+        const idImage = filename.split('/')[1].split('.')[0]
+        if (product!.images && !product!.images.includes(idImage)) {
+          await deleteProductImage({
+            id: idImage,
+            idProduct,
+            images: product!.images
+          } as iProductImage)
+        }
+      })
+    navigate(`/admin/products?page=${page}`)
+  }
 
   const submitHandler = async (e: React.SyntheticEvent) => {
     e.preventDefault()
@@ -83,13 +118,20 @@ export default function ProductEditPage() {
   }
 
   const deleteFileHandler = async (filename: string) => {
-    if (images.length > 1) {
-      const idImg = filename.split('/')[1].split('.')[0]
-      await deleteProductImage(idImg)
-      setImages(images.filter((x: string) => x !== filename))
-    } else {
-      toast.error("Image can't remove, it should have atleast one image!")
+    const idImage = filename.split('/')[1].split('.')[0]
+    const updatedImages = images.filter((x: string) => x !== filename)
+    try {
+      if (idImage !== 'sample')
+        await deleteProductImage({
+          id: idImage,
+          idProduct,
+          images: updatedImages.join(',')
+        } as iProductImage)
+      setImages(updatedImages)
+    } catch (err) {
+      toast.error(getError(err as ApiError))
     }
+    setShowConfirmationModal(false);
   }
 
   const uploadFileHandler = async (e: any, name: string) => {
@@ -110,6 +152,8 @@ export default function ProductEditPage() {
           name === 'imageFile'
             ? setImage(data.secure_url.replace(fn.imageBaseURL, ''))
             : setImages([...images, data.secure_url.replace(fn.imageBaseURL, '')])
+
+          toast.success('Uploaded successfully, click update to sync images to your product')
         } else {
           toast.error('Image file only allow with (jpg|jpeg|png) extension!')
         }
@@ -174,7 +218,7 @@ export default function ProductEditPage() {
                   </td>
                   <td>{img}</td>
                   <td>
-                    <Button variant="light" onClick={() => deleteFileHandler(img)}>
+                    <Button variant="light" onClick={() => showModal('Delete', img, img)}>
                       <i className="fa fa-times-circle" />
                     </Button>
                   </td>
@@ -182,6 +226,14 @@ export default function ProductEditPage() {
               ))}
             </tbody>
           </table>
+          <PromptConfirmation
+            showModal={showConfirmationModal}
+            confirmModal={deleteFileHandler}
+            hideModal={hideConfirmationModal}
+            deleteItem={deleteItem}
+            title={modalTitle}
+            message={modalMessage}
+          />
         </>
       )}
     </span>
@@ -193,7 +245,7 @@ export default function ProductEditPage() {
         {isLoading ? 'Loading...' : 'Update'}
       </Button>
       {'  '}
-      <Button onClick={() => navigate(`/admin/products?page=${page}`)}>
+      <Button onClick={() => backHandler()}>
         Back
       </Button>
     </>

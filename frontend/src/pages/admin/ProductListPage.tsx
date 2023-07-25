@@ -8,7 +8,6 @@ import Loading from '../../components/Loading'
 import Message from '../../components/Message'
 import PromptConfirmation from '../../components/PromptConfirmation'
 
-
 import { Product } from '../../types/Product'
 import { getError } from '../../utils'
 import { ApiError } from '../../types/ApiError'
@@ -52,7 +51,7 @@ export default function ProductListPage() {
         navigate(`/admin/products?page=${filter.pages}`)
       } else {
         navigate(`/admin/products?page=${parseInt(page) + 1}`)
-        setTimeout(() => navigate(`/admin/products?page=${page}`), 100);
+        setTimeout(() => navigate(`/admin/products?page=${page}`), 10)
       }
       toast.success('Product deleted successfully');
     } catch (err) {
@@ -175,7 +174,6 @@ export default function ProductListPage() {
             title={modalTitle}
             message={modalMessage}
           />
-
         </>
       )}
     </div >

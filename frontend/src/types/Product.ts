@@ -12,3 +12,9 @@ export interface Product {
   rating: number
   numReviews: number
 }
+
+export interface iProductImage {
+  id: string
+  idProduct: string
+  images: string
+}

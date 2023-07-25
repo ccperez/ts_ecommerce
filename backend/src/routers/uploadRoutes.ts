@@ -1,8 +1,9 @@
 import express, { Request, Response } from 'express'
-import { v2 as cloudinary } from 'cloudinary'
 import multer from 'multer'
 import streamifier from 'streamifier'
 import { isAuth, isAdmin } from '../utils'
+import cloudinary from '../cloudinary'
+import { ProductModel } from '../models/productModel'
 
 const upload = multer()
 
@@ -14,11 +15,6 @@ uploadRouter.post(
   isAdmin,
   upload.single('file'),
   async (req, res) => {
-    cloudinary.config({
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET,
-    })
     const streamUpload = (req: any) => {
       return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream((error, result) => {
@@ -32,20 +28,23 @@ uploadRouter.post(
   }
 )
 
-uploadRouter.delete(
+uploadRouter.put(
   '/image/:id',
   isAuth,
   isAdmin,
   async (req: Request, res: Response) => {
-    cloudinary.config({
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET,
-    })
-    const productImages = await cloudinary.uploader.destroy(req.params.id);
-    productImages
-      ? res.json({ message: 'Product Image Deleted' })
-      : res.status(404).json({ message: 'Product Image Not Found' })
+    const product = await ProductModel.findById(req.body.idProduct)
+    const productImages = await cloudinary.uploader.destroy(req.params.id)
+    if (product && productImages) {
+      product.images = req.body.images
+      await product.save()
+      res.json({
+        message: 'Product Image Deleted',
+        product: { _id: product!._id, images: product!.images },
+      })
+    } else {
+      res.status(404).json({ message: 'Product Image Not Found' })
+    }
   }
 )
 

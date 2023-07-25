@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express'
 import asyncHandler from 'express-async-handler'
+import { v2 as cloudinary } from 'cloudinary'
 import { ProductModel } from '../models/productModel'
 import { isAuth, isAdmin } from '../utils'
 
@@ -188,9 +189,25 @@ productRouter.delete(
   isAuth,
   isAdmin,
   asyncHandler(async (req: Request, res: Response) => {
-    const product = await ProductModel.findByIdAndDelete(req.params.id)
-    product
-      ? res.json({ message: 'Product Deleted' })
-      : res.status(404).json({ message: 'Product Not Found' })
+    cloudinary.config({
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    })
+    const idProduct = req.params.id
+    const product = await ProductModel.findById(idProduct)
+    if (product) {
+      product.images
+        .split(',')
+        .filter((x) => x !== 'images/sample.jpg')
+        .map(async (filename: any) => {
+          const idImage = filename.split('/')[1].split('.')[0]
+          await cloudinary.uploader.destroy(idImage)
+        })
+      await ProductModel.findByIdAndDelete(idProduct)
+      res.json({ message: 'Product Deleted' })
+    } else {
+      res.status(404).json({ message: 'Product Not Found' })
+    }
   })
 )
