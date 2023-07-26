@@ -5,6 +5,7 @@ import { CartItem, ShippingAddress } from '../types/Cart'
 import { iOrdered } from '../types/Order'
 
 import Message from './Message'
+import cFn from '../functions/common'
 
 export const CardContainer = (
   { order, title, children }: { order?: iOrdered, title: string, children: React.ReactNode }
@@ -55,7 +56,7 @@ export const Cart = ({ items }: { items: CartItem[] }) =>
         <Row className="align-items-center">
           <Col md={6}>
             <img
-              src={item.image}
+              src={cFn.imageURL(item.image!)}
               alt={item.name}
               className="img-fluid rounded thumbnail"
             />{' '}

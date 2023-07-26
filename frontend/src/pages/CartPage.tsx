@@ -7,6 +7,7 @@ import { CartItem } from '../types/Cart'
 import { Store } from '../Store'
 import { updateCart, removeItem } from '../stateMgmt/actions/cartActions'
 import fn from '../functions/cart'
+import cFn from '../functions/common'
 
 export default function CartPage() {
   const navigate = useNavigate()
@@ -39,7 +40,7 @@ export default function CartPage() {
                   <Row className="align-items-center">
                     <Col md={4}>
                       <img
-                        src={item.image}
+                        src={cFn.imageURL(item.image!)}
                         alt={item.name}
                         className="img-fluid rounded thumbnail"
                       ></img>{' '}

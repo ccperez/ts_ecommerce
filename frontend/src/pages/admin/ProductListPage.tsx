@@ -50,8 +50,10 @@ export default function ProductListPage() {
       if (parseInt(page) > filter.pages) {
         navigate(`/admin/products?page=${filter.pages}`)
       } else {
-        navigate(`/admin/products?page=${parseInt(page) + 1}`)
-        setTimeout(() => navigate(`/admin/products?page=${page}`), 10)
+        await Promise.all([
+          navigate(`/admin/products?page=${parseInt(page) + 1}`),
+          setTimeout(() => navigate(`/admin/products?page=${page}`), 10)
+        ])
       }
       toast.success('Product deleted successfully');
     } catch (err) {

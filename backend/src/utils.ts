@@ -35,15 +35,17 @@ export const isAdmin = (req: Request, res: Response, next: NextFunction) =>
     ? next()
     : res.status(401).send({ message: 'Invalid Admin Token' })
 
-export const stockUpdate = (type: string, orderItems: any) => {
-  orderItems.map(async (itm: any) => {
-    const product = await ProductModel.findById(itm._id)
-    if (product) {
-      product.countInStock =
-        type === 'Decrement'
-          ? product.countInStock - itm.quantity
-          : product.countInStock + itm.quantity
-      await product.save()
-    }
-  })
+export const stockUpdate = async (type: string, orderItems: any) => {
+  await Promise.allSettled(
+    orderItems.map(async (itm: any) => {
+      const product = await ProductModel.findById(itm._id)
+      if (product) {
+        product.countInStock =
+          type === 'Decrement'
+            ? product.countInStock - itm.quantity
+            : product.countInStock + itm.quantity
+        await product.save()
+      }
+    })
+  )
 }

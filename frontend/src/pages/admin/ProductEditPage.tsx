@@ -70,7 +70,7 @@ export default function ProductEditPage() {
   const showModal = (title: string, id?: string, name?: string) => {
     if (images.length > 1) {
       setDeleteItem(id!)
-      setModalMessage(`This permanently remove from your cloudinary storage. Continue delete ${name}? `)
+      setModalMessage(`This permanently remove from your cloudinary storage. Delete ${name}? `)
       setModalTitle(title)
       setShowConfirmationModal(true);
     } else {
@@ -81,18 +81,20 @@ export default function ProductEditPage() {
   const hideConfirmationModal = () => setShowConfirmationModal(false)
 
   const backHandler = async () => {
-    images
-      .filter((x: any) => x !== 'images/sample.jpg')
-      .map(async (filename: any) => {
-        const idImage = filename.split('/')[1].split('.')[0]
-        if (product!.images && !product!.images.includes(idImage)) {
-          await deleteProductImage({
-            id: idImage,
-            idProduct,
-            images: product!.images
-          } as iProductImage)
-        }
-      })
+    await Promise.allSettled(
+      images
+        .filter((x: any) => x !== 'images/sample.jpg')
+        .map(async (filename: any) => {
+          const idImage = filename.split('/')[1].split('.')[0]
+          if (product!.images && !product!.images.includes(idImage)) {
+            await deleteProductImage({
+              id: idImage,
+              idProduct,
+              images: product!.images
+            } as iProductImage)
+          }
+        })
+    )
     navigate(`/admin/products?page=${page}`)
   }
 

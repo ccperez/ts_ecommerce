@@ -9,11 +9,11 @@ export const seedRouter = express.Router()
 seedRouter.get(
   '/',
   asyncHandler(async (req: Request, res: Response) => {
-    await ProductModel.deleteMany({})
-    const createdProducts = await ProductModel.insertMany(sampleProducts)
-
-    await UserModel.deleteMany({})
-    const createdUsers = await UserModel.insertMany(sampleUsers)
+    await Promise.all([ProductModel.deleteMany({}), UserModel.deleteMany({})])
+    const [createdProducts, createdUsers] = await Promise.all([
+      ProductModel.insertMany(sampleProducts),
+      UserModel.insertMany(sampleUsers),
+    ])
 
     res.json({ createdProducts, createdUsers })
   })

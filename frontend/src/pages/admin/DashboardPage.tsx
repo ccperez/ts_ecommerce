@@ -39,15 +39,15 @@ export default function DashboardPage() {
         <>
           <Row>
             <DashboardItem
-              title={`${summary?.users[0].numUsers || 0}`}
+              title={`${summary?.users[0]?.numUsers || 0}`}
               text=" Users"
             />
             <DashboardItem
-              title={`${summary?.orders[0].numOrders || 0}`}
+              title={`${summary?.orders[0]?.numOrders || 0}`}
               text=" Orders"
             />
             <DashboardItem
-              title={`$ ${summary?.orders[0].totalSales.toFixed(2) || 0}`}
+              title={`$ ${summary?.orders[0]?.totalSales.toFixed(2) || 0}`}
               text=" Total Sales"
             />
           </Row>

@@ -66,29 +66,25 @@ productRouter.get(
         ? { createdAt: -1 }
         : { _id: -1 }
 
-    const products = await ProductModel.find({
-      ...queryFilter,
-      ...categoryFilter,
-      ...priceFilter,
-      ...ratingFilter,
-    })
-      .sort(sortOrder)
-      .skip(pageSize * (page - 1))
-      .limit(pageSize)
-
-    const countProducts = await ProductModel.countDocuments({
-      ...queryFilter,
-      ...categoryFilter,
-      ...priceFilter,
-      ...ratingFilter,
-    })
-
-    res.json({
-      products,
-      countProducts,
-      page,
-      pages: Math.ceil(countProducts / pageSize),
-    })
+    const [products, countProducts] = await Promise.all([
+      ProductModel.find({
+        ...queryFilter,
+        ...categoryFilter,
+        ...priceFilter,
+        ...ratingFilter,
+      })
+        .sort(sortOrder)
+        .skip(pageSize * (page - 1))
+        .limit(pageSize),
+      ProductModel.countDocuments({
+        ...queryFilter,
+        ...categoryFilter,
+        ...priceFilter,
+        ...ratingFilter,
+      }),
+    ])
+    const pages = Math.ceil(countProducts / pageSize)
+    res.json({ products, countProducts, page, pages })
   })
 )
 
@@ -111,19 +107,15 @@ productRouter.get(
     const pageSize = parseInt(<string>query.pageSize) || PAGE_SIZE
     const page = parseInt(<string>query.page) || 1
 
-    const products = await ProductModel.find()
-      .sort({ _id: -1 })
-      .skip(pageSize * (page - 1))
-      .limit(pageSize)
-
-    const countProducts = await ProductModel.countDocuments()
-
-    res.json({
-      products,
-      countProducts,
-      page,
-      pages: Math.ceil(countProducts / pageSize),
-    })
+    const [products, countProducts] = await Promise.all([
+      ProductModel.find()
+        .sort({ _id: -1 })
+        .skip(pageSize * (page - 1))
+        .limit(pageSize),
+      ProductModel.countDocuments(),
+    ])
+    const pages = Math.ceil(countProducts / pageSize)
+    res.json({ products, countProducts, page, pages })
   })
 )
 
@@ -197,14 +189,16 @@ productRouter.delete(
     const idProduct = req.params.id
     const product = await ProductModel.findById(idProduct)
     if (product) {
-      product.images
-        .split(',')
-        .filter((x) => x !== 'images/sample.jpg')
-        .map(async (filename: any) => {
-          const idImage = filename.split('/')[1].split('.')[0]
-          await cloudinary.uploader.destroy(idImage)
-        })
-      await ProductModel.findByIdAndDelete(idProduct)
+      await Promise.allSettled([
+        product.images
+          .split(',')
+          .filter((x) => x !== 'images/sample.jpg')
+          .map(async (filename: any) => {
+            const idImage = filename.split('/')[1].split('.')[0]
+            await cloudinary.uploader.destroy(idImage)
+          }),
+        ProductModel.findByIdAndDelete(idProduct),
+      ])
       res.json({ message: 'Product Deleted' })
     } else {
       res.status(404).json({ message: 'Product Not Found' })

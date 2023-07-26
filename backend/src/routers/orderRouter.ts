@@ -21,40 +21,44 @@ orderRouter.get(
   isAuth,
   isAdmin,
   asyncHandler(async (req: Request, res: Response) => {
-    const orders = await OrderModel.aggregate([
-      {
-        $group: {
-          _id: { $toString: '' },
-          numOrders: { $sum: 1 },
-          totalSales: { $sum: '$totalPrice' },
+    const [users, orders, dailyOrders, productCategories] = await Promise.all([
+      UserModel.aggregate([
+        {
+          $group: {
+            _id: { $toString: '' },
+            numUsers: { $sum: 1 },
+          },
         },
-      },
-    ])
-    const users = await UserModel.aggregate([
-      {
-        $group: {
-          _id: { $toString: '' },
-          numUsers: { $sum: 1 },
+      ]),
+      OrderModel.aggregate([
+        {
+          $group: {
+            _id: { $toString: '' },
+            numOrders: { $sum: 1 },
+            totalSales: { $sum: '$totalPrice' },
+          },
         },
-      },
-    ])
-    const dailyOrders = await OrderModel.aggregate([
-      {
-        $group: {
-          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
-          orders: { $sum: 1 },
-          sales: { $sum: '$totalPrice' },
+      ]),
+      OrderModel.aggregate([
+        {
+          $group: {
+            _id: {
+              $dateToString: { format: '%Y-%m-%d', date: '$createdAt' },
+            },
+            orders: { $sum: 1 },
+            sales: { $sum: '$totalPrice' },
+          },
         },
-      },
-      { $sort: { _id: 1 } },
-    ])
-    const productCategories = await ProductModel.aggregate([
-      {
-        $group: {
-          _id: '$category',
-          count: { $sum: 1 },
+        { $sort: { _id: 1 } },
+      ]),
+      ProductModel.aggregate([
+        {
+          $group: {
+            _id: '$category',
+            count: { $sum: 1 },
+          },
         },
-      },
+      ]),
     ])
     res.json({ users, orders, dailyOrders, productCategories })
   })

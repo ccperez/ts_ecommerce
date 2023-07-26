@@ -34,10 +34,12 @@ uploadRouter.put(
   isAdmin,
   async (req: Request, res: Response) => {
     const product = await ProductModel.findById(req.body.idProduct)
-    const productImages = await cloudinary.uploader.destroy(req.params.id)
-    if (product && productImages) {
+    if (product) {
       product.images = req.body.images
-      await product.save()
+      await Promise.all([
+        product.save(),
+        cloudinary.uploader.destroy(req.params.id),
+      ])
       res.json({
         message: 'Product Image Deleted',
         product: { _id: product!._id, images: product!.images },
