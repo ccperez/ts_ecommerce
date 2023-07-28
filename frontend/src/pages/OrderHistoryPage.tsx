@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import { Helmet } from 'react-helmet-async'
@@ -14,27 +14,21 @@ import { ApiError } from '../types/ApiError'
 import { useGetOrderHistoryQuery, useDeleteOrderMutation } from '../hooks/orderHooks'
 
 export default function OrderHistoryPage() {
-  const { state: { userInfo: { isAdmin } } } = useContext(Store)
-
-  const [ordersHistory, setOrdersHistory] = useState<any>([])
+  const { state: { userInfo } } = useContext(Store)
+  const isAdmin = userInfo?.isAdmin
 
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const [modalTitle, setModalTitle] = useState('')
   const [modalMessage, setModalMessage] = useState('')
   const [deleteItem, setDeleteItem] = useState('')
 
-  const { data: orders, isLoading, error } = useGetOrderHistoryQuery()
+  const { data: orders, isLoading, error, refetch } = useGetOrderHistoryQuery()
   const { mutateAsync: deleteOrder } = useDeleteOrderMutation()
-
-  useEffect(() => {
-    if (orders) setOrdersHistory(orders)
-  }, [orders])
-
 
   const deleteOrderHandler = async (idOrder: string) => {
     try {
-      const { orders } = await deleteOrder(idOrder)
-      setOrdersHistory(orders!)
+      await deleteOrder(idOrder)
+      refetch()
       toast.success('Order deleted successfully')
     } catch (err) {
       toast.error(getError(err as ApiError))
@@ -81,7 +75,7 @@ export default function OrderHistoryPage() {
               </tr>
             </thead>
             <tbody>
-              {ordersHistory!.map((order: any) => (
+              {orders!.map((order: any) => (
                 <tr key={order._id}>
                   <td>{order._id.slice(-6)}</td>
                   {isAdmin && <td>{order.user?.name}</td>}

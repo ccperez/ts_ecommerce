@@ -29,7 +29,7 @@ export default function ProductListPage() {
   const [modalMessage, setModalMessage] = useState('')
   const [deleteItem, setDeleteItem] = useState('')
 
-  const { data, isLoading, error } = useGetAdminProductsQuery({ page })
+  const { data, isLoading, error, refetch } = useGetAdminProductsQuery({ page })
   const { mutateAsync: createProduct } = useCreateProductMutation()
   const { mutateAsync: deleteProduct } = useDeleteProductMutation()
 
@@ -47,14 +47,7 @@ export default function ProductListPage() {
   const deleteProductHandler = async (id: string) => {
     try {
       await deleteProduct(id)
-      if (parseInt(page) > filter.pages) {
-        navigate(`/admin/products?page=${filter.pages}`)
-      } else {
-        await Promise.all([
-          navigate(`/admin/products?page=${parseInt(page) + 1}`),
-          setTimeout(() => navigate(`/admin/products?page=${page}`), 10)
-        ])
-      }
+      refetch()
       toast.success('Product deleted successfully');
     } catch (err) {
       toast.error(getError(err as ApiError))

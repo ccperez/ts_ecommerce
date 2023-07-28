@@ -64,7 +64,7 @@ export const useDeleteOrderMutation = () =>
   useMutation({
     mutationFn: async (id: string) =>
       (
-        await apiClient.delete<{ message: string; orders: iOrdered }>(
+        await apiClient.delete<{ message: string }>(
           `/api/orders/${id}`
         )
       ).data,

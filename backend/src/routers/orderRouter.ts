@@ -151,12 +151,11 @@ orderRouter.delete(
     const idOrder = req.params.id
     const deletedOrder = await OrderModel.findById(idOrder)
     if (deletedOrder) {
-      const [stock, deleted, orders] = await Promise.all([
+      await Promise.all([
         stockUpdate('Increment', deletedOrder.orderItems),
         OrderModel.findByIdAndDelete(idOrder),
-        OrderModel.find().populate('user', 'name'),
       ])
-      res.json({ message: 'Order Deleted', orders })
+      res.json({ message: 'Order Deleted' })
       return
     }
     res.status(404).json({ message: 'Order not found!' })
