@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { Button, Col, ListGroup, Row } from 'react-bootstrap'
@@ -9,15 +9,24 @@ import Loading from '../components/Loading'
 import Message from '../components/Message'
 import { CardContainer, ShippingInfo, Payment, Cart, Summary } from '../components/order'
 
+import { Store } from '../Store'
 import { getError } from '../utils'
 import { ApiError } from '../types/ApiError'
-import { useGetOrderDetailsQuery, useGetPaypalClientIdQuery, usePayOrderMutation } from '../hooks/orderHooks'
+import {
+  useGetOrderDetailsQuery,
+  useGetPaypalClientIdQuery,
+  usePayOrderMutation,
+  useDeliverOrderMutation
+} from '../hooks/orderHooks'
 
 export default function OrderPage() {
   const { id: orderId } = useParams()
-  const { data: order, isLoading, error, refetch } = useGetOrderDetailsQuery(orderId!)
 
+  const { state: { userInfo } } = useContext(Store)
+
+  const { data: order, isLoading, error, refetch } = useGetOrderDetailsQuery(orderId!)
   const { mutateAsync: payOrder, isLoading: loadingPay } = usePayOrderMutation()
+  const { mutateAsync: deliverOrder, isLoading: loadingDeliver } = useDeliverOrderMutation()
 
   const testPayHandler = async () => {
     await payOrder({ orderId: orderId! })
@@ -77,21 +86,43 @@ export default function OrderPage() {
     onError: (err) => toast.error(getError(err as ApiError)),
   }
 
-  const OrderButton = () =>
-    <ListGroup.Item>
-      {isPending ? (
-        <Loading />
-      ) : isRejected ? (
-        <Message variant="danger">Error in connecting to PayPal</Message>
-      ) : (
-        <div>
-          <PayPalButtons {...paypalbuttonTransactionProps} />
-          <Button onClick={testPayHandler}>Test Pay</Button>
-        </div>
-      )}
-      {loadingPay && <Loading />}
-    </ListGroup.Item>
+  const deliverOrderHandler = async () => {
+    try {
+      await deliverOrder(orderId!)
+      refetch()
+      toast.success('Order is delivered');
+    } catch (err) {
+      toast.error(getError(err as ApiError))
+    }
+  }
 
+  const OrderButton = () =>
+    <>
+      {!order?.isPaid && (
+        <ListGroup.Item>
+          {isPending ? (
+            <Loading />
+          ) : isRejected ? (
+            <Message variant="danger">Error in connecting to PayPal</Message>
+          ) : (
+            <div>
+              <PayPalButtons {...paypalbuttonTransactionProps} />
+              <Button onClick={testPayHandler}>Test Pay</Button>
+            </div>
+          )}
+          {loadingPay && <Loading />}
+        </ListGroup.Item>
+      )}
+      {userInfo?.isAdmin && (
+        <ListGroup.Item>
+          <div className="d-grid">
+            <Button type="button" onClick={deliverOrderHandler}>
+              {loadingDeliver ? 'Loading...' : 'Order Deliver'}
+            </Button>
+          </div>
+        </ListGroup.Item>
+      )}
+    </>
 
   return isLoading ? (
     <Loading />
@@ -124,7 +155,7 @@ export default function OrderPage() {
               shippingPrice={order.shippingPrice}
               taxPrice={order.taxPrice}
               totalPrice={order.totalPrice}
-              buttonComponent={!order?.isPaid && <OrderButton />}
+              buttonComponent={<OrderButton />}
             />
           </CardContainer>
         </Col>

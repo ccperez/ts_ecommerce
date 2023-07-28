@@ -41,6 +41,14 @@ export const usePayOrderMutation = () =>
       ).data,
   })
 
+export const useDeliverOrderMutation = () =>
+  useMutation({
+    mutationFn: async (idOrder: string) => (
+      await apiClient.put<{ message: string }>(
+        `api/orders/${idOrder}/deliver`, {}
+      )).data
+  })
+
 export const useCreateOrderMutation = () =>
   useMutation({
     mutationFn: async (order: iOrder) =>

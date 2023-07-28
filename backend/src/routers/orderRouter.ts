@@ -126,6 +126,23 @@ orderRouter.put(
   })
 )
 
+orderRouter.put(
+  '/:id/deliver',
+  isAuth,
+  isAdmin,
+  asyncHandler(async (req: Request, res: Response) => {
+    const order = await OrderModel.findById(req.params.id)
+    if (order) {
+      order.isDelivered = true
+      order.deliveredAt = new Date(Date.now())
+      await order.save()
+      res.send({ message: 'Order Delivered' })
+    } else {
+      res.status(404).send({ message: 'Order Not Found' })
+    }
+  })
+)
+
 orderRouter.delete(
   '/:id',
   isAuth,
