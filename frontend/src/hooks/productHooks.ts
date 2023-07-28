@@ -91,7 +91,7 @@ export const useDeleteProductImageMutation = () =>
   useMutation({
     mutationFn: async (image: iProductImage) =>
       (
-        await apiClient.put<{ message: string; product: {} }>(
+        await apiClient.put<{ message: string }>(
           `/api/upload/image/${image.id}`,
           image
         )

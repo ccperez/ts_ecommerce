@@ -4,7 +4,7 @@ import { UserInfo } from './UserInfo'
 export type AppState = {
   mode: string
   cart: Cart
-  userInfo?: UserInfo
+  userInfo: UserInfo
 }
 
 export type Action =

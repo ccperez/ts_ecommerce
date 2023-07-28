@@ -11,7 +11,10 @@ orderRouter.get(
   '/history',
   isAuth,
   asyncHandler(async (req: Request, res: Response) => {
-    const orders = await OrderModel.find({ user: req.user._id })
+    const orders = req.user.isAdmin
+      ? await OrderModel.find().populate('user', 'name')
+      : await OrderModel.find({ user: req.user._id })
+
     res.json(orders)
   })
 )
@@ -120,5 +123,25 @@ orderRouter.put(
     } else {
       res.status(404).json({ message: 'Order Not Found' })
     }
+  })
+)
+
+orderRouter.delete(
+  '/:id',
+  isAuth,
+  isAdmin,
+  asyncHandler(async (req, res) => {
+    const idOrder = req.params.id
+    const deletedOrder = await OrderModel.findById(idOrder)
+    if (deletedOrder) {
+      const [stock, deleted, orders] = await Promise.all([
+        stockUpdate('Increment', deletedOrder.orderItems),
+        OrderModel.findByIdAndDelete(idOrder),
+        OrderModel.find().populate('user', 'name'),
+      ])
+      res.json({ message: 'Order Deleted', orders })
+      return
+    }
+    res.status(404).json({ message: 'Order not found!' })
   })
 )
