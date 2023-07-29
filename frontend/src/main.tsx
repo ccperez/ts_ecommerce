@@ -37,6 +37,7 @@ import ProductListPage from './pages/admin/ProductListPage'
 import ProductEditPage from './pages/admin/ProductEditPage'
 import OrderListScreen from './pages/OrderHistoryPage'
 import UserListPage from './pages/admin/UserListPage'
+import UserEditPage from './pages/admin/UserEditPage'
 
 import ErrorBoundary from './components/ErrorBoundary.tsx'
 
@@ -73,6 +74,7 @@ const router = createBrowserRouter(
         <Route path="admin/product/:id" element={<ProductEditPage />} />
         <Route path="admin/orders" element={<OrderListScreen />} />
         <Route path="admin/users" element={< UserListPage />} />
+        <Route path="admin/user/:id" element={< UserEditPage />} />
       </Route>
     </Route>
   )

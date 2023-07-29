@@ -1,18 +1,24 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
 import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 
 import Loading from '../../components/Loading'
 import Message from '../../components/Message'
 import PromptConfirmation from '../../components/PromptConfirmation'
 
+import { Store } from '../../Store'
 import { getError } from '../../utils'
 import { ApiError } from '../../types/ApiError'
 
 import { useGetUsersQuery, useDeleteUserMutation } from '../../hooks/userHooks'
 
 export default function UserListPage() {
+  const navigate = useNavigate()
+
+  const { state: { userInfo } } = useContext(Store)
+
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const [modalTitle, setModalTitle] = useState('')
   const [modalMessage, setModalMessage] = useState('')
@@ -21,7 +27,8 @@ export default function UserListPage() {
   const { data: users, isLoading, error, refetch } = useGetUsersQuery()
   const { mutateAsync: deleteUser } = useDeleteUserMutation()
 
-  const editHandler = (idUser: string) => { }
+  const editHandler = (idUser: string) =>
+    navigate(`/admin/user/${idUser}`)
 
   const deleteUserHandler = async (idUser: string) => {
     try {
@@ -75,13 +82,15 @@ export default function UserListPage() {
                   <td>{user.email}</td>
                   <td>{user.isAdmin ? 'YES' : 'NO'}</td>
                   <td>
-                    <Button
-                      type='button'
-                      variant='light'
-                      onClick={() => editHandler('1')}
-                    >
-                      Edit
-                    </Button>
+                    {userInfo!._id !== user._id && (
+                      <Button
+                        type='button'
+                        variant='light'
+                        onClick={() => editHandler(user._id)}
+                      >
+                        Edit
+                      </Button>
+                    )}
                     &nbsp;
                     <Button
                       type='button'
@@ -104,7 +113,8 @@ export default function UserListPage() {
             message={modalMessage}
           />
         </>
-      )}
-    </div>
+      )
+      }
+    </div >
   )
 }

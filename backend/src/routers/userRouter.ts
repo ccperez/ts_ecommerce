@@ -2,11 +2,9 @@ import express, { Request, Response } from 'express'
 import asyncHandler from 'express-async-handler'
 import bcrypt from 'bcryptjs'
 import { User, UserModel } from '../models/userModel'
+import { OrderModel } from '../models/orderModel'
 import { generateToken, isAuth, isAdmin } from '../utils'
 import { emailResetPasswordOTP } from '../mailer'
-
-import { Order, OrderModel } from '../models/orderModel'
-import * as mongoose from 'mongoose'
 
 export const userRouter = express.Router()
 
@@ -17,6 +15,16 @@ userRouter.get(
   asyncHandler(async (req: Request, res: Response) => {
     const users = await UserModel.find({})
     res.json(users)
+  })
+)
+
+userRouter.get(
+  '/:id',
+  isAuth,
+  isAdmin,
+  asyncHandler(async (req: Request, res: Response) => {
+    const user = await UserModel.findById(req.params.id)
+    user ? res.json(user) : res.status(404).json({ message: 'User Not Found' })
   })
 )
 
@@ -94,6 +102,21 @@ userRouter.put(
       return
     }
     res.status(404).json({ message: 'User not found' })
+  })
+)
+
+userRouter.put(
+  '/:id',
+  isAuth,
+  isAdmin,
+  asyncHandler(async (req: Request, res: Response) => {
+    const user = await UserModel.findOneAndUpdate(
+      { _id: req.params.id },
+      { isAdmin: req.body.isAdmin }
+    )
+    user
+      ? res.json({ message: 'User updated' })
+      : res.status(404).json({ message: 'User not found' })
   })
 )
 

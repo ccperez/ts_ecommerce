@@ -28,6 +28,10 @@ img.thumbnail {
   max-width: 600px;
 }
 
+.smaller-container {
+  max-width: 300px;
+}
+
 .cart-qty {
   margin-left: 3px;
   margin-right: 3px;
