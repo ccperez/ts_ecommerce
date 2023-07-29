@@ -61,3 +61,9 @@ export const useGetUsersQuery = () =>
     queryKey: ['users-List'],
     queryFn: async () => (await apiClient.get<User[]>(`api/users/`)).data,
   })
+
+export const useDeleteUserMutation = () =>
+  useMutation({
+    mutationFn: async (id: string) =>
+      (await apiClient.delete<{ message: string }>(`/api/users/${id}`)).data,
+  })

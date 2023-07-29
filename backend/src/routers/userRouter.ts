@@ -5,6 +5,9 @@ import { User, UserModel } from '../models/userModel'
 import { generateToken, isAuth, isAdmin } from '../utils'
 import { emailResetPasswordOTP } from '../mailer'
 
+import { Order, OrderModel } from '../models/orderModel'
+import * as mongoose from 'mongoose'
+
 export const userRouter = express.Router()
 
 userRouter.get(
@@ -91,5 +94,23 @@ userRouter.put(
       return
     }
     res.status(404).json({ message: 'User not found' })
+  })
+)
+
+userRouter.delete(
+  '/:id',
+  isAuth,
+  isAdmin,
+  asyncHandler(async (req: Request, res: Response) => {
+    const idUser = req.params.id
+    const hasOrders = await OrderModel.find({ user: idUser })
+    if (hasOrders.length > 0) {
+      res.status(404).json({ message: "Can't delete it has related orders" })
+    } else {
+      const deletedUser = await UserModel.findByIdAndDelete(idUser)
+      deletedUser
+        ? res.json({ message: 'User Deleted' })
+        : res.status(404).json({ message: 'User not found' })
+    }
   })
 )
