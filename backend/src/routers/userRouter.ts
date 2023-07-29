@@ -2,10 +2,21 @@ import express, { Request, Response } from 'express'
 import asyncHandler from 'express-async-handler'
 import bcrypt from 'bcryptjs'
 import { User, UserModel } from '../models/userModel'
-import { generateToken, isAuth } from '../utils'
+import { generateToken, isAuth, isAdmin } from '../utils'
 import { emailResetPasswordOTP } from '../mailer'
 
 export const userRouter = express.Router()
+
+userRouter.get(
+  '/',
+  isAuth,
+  isAdmin,
+  asyncHandler(async (req: Request, res: Response) => {
+    const users = await UserModel.find({})
+    res.json(users)
+  })
+)
+
 // POST /api/users/signin
 userRouter.post(
   '/signin',

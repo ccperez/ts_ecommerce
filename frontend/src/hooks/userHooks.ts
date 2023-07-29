@@ -1,6 +1,7 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import apiClient from '../apiClient'
 import { UserInfo } from '../types/UserInfo'
+import { User } from '../types/User'
 
 interface signInProps {
   email: string
@@ -53,4 +54,10 @@ export const userPasswordMutation = () =>
           sendData
         )
       ).data,
+  })
+
+export const useGetUsersQuery = () =>
+  useQuery({
+    queryKey: ['users-List'],
+    queryFn: async () => (await apiClient.get<User[]>(`api/users/`)).data,
   })
